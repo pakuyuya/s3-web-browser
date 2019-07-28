@@ -13,7 +13,8 @@
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
-    "vue-property-decorator": "^8.1.0"
+    "vue-property-decorator": "^8.1.0",
+    "vuetify": "^2.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.0",
@@ -26,8 +27,12 @@
     "@vue/test-utils": "1.0.0-beta.29",
     "chai": "^4.1.2",
     "lint-staged": "^8.1.5",
+    "sass": "^1.17.4",
+    "sass-loader": "^7.1.0",
     "typescript": "^3.4.3",
-    "vue-template-compiler": "^2.6.10"
+    "vue-cli-plugin-vuetify": "^0.6.1",
+    "vue-template-compiler": "^2.6.10",
+    "vuetify-loader": "^1.2.2"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
