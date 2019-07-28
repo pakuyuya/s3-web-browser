@@ -1,0 +1,3 @@
+Port: 4000
+Debug: true
+TextdataDir: ./textdatas
