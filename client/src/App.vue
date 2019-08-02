@@ -1,58 +1,65 @@
 <template>
   <v-app>
-    <v-navigation-drawer absolute>
-      <v-toolbar flat>
-        <v-list>
-          <v-list-tile>
-            <v-list-tile-title class="title">
-              S3 Web Browser
-            </v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-toolbar>
+    <v-navigation-drawer app clipped fixed v-model="leftDrawer" :mini-variant="leftMiniVariant">
+      <v-list dense>
+        <v-list-item v-for="profile in profiles" :key="profile.id" @click="selectProfile(profile)">
+          <v-list-item-action>
+            <v-icon>cloud_circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-action>{{ profile.name }}</v-list-item-action>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
 
-    <v-divider></v-divider>
+    <v-app-bar app clipped-left clipped-right absolute>
+      <v-toolbar-title>
+        S3 Web Browser
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-title>{{ $store.state.user }}</v-toolbar-title>
+      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+        <v-icon>account-circle</v-icon>
+      </v-btn>
+    </v-app-bar>
 
-    <v-list dense class="pt-0">
-      <v-list-tile v-for="profile in profiles" :key="profile.id" @click="selectProfile">
-        <v-list-tile-action>
-          <v-icon>cloud_circle</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-component>
-          <v-list-tile-title>{{ profile.name }}</v-list-tile-title>
-        </v-list-tile-component>
-      </v-list-tile>
-    </v-list>
+    
+    <v-content><router-view/></v-content>
 
-    <v-container>
-      <v-layout justify-center v-if="selectedProfile === undefined" >
-        接続先を選択してください。
-      </v-layout>
-      <v-list v-if="selectedProfile !== undefined" class="text-xs-center">
-        <s3list />
+    <v-navigation-drawer app fixed right v-model="rightDrawer">
+      <v-list>
+        <v-list-item to="/logout">
+          <v-list-item-action><v-icon>dashboard</v-icon></v-list-item-action>
+          <v-list-item-content><v-list-item-title>ログアウト</v-list-item-title></v-list-item-content>
+        </v-list-item>
       </v-list>
-    </v-container>
+    </v-navigation-drawer>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+// import Vue from 'vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import S3list from './components/S3list.vue';
 
-export default Vue.extend({
-  name: 'App',
-  components: {
-    S3list,
-  },
-  data: () => ({
-    profiles : [],
-    selectedProfile: undefined,
-  }),
-  methods: {
-    selectProfile () {
+import {S3Profile} from './domain/s3profile';
 
-    },
-  },
-});
+
+@Component
+export default class App extends Vue {
+  public leftDrawer: boolean = true;
+
+  public profiles: S3Profile[] = [];
+
+  public selectedProfile?: S3Profile = undefined;
+
+  public leftMiniVariant: boolean = false;
+
+  public rightDrawer: boolean = false;
+
+  public selectProfile(profile: S3Profile) {
+    this.selectedProfile = profile;
+  }
+}
 </script>
