@@ -19,7 +19,7 @@ export default new Router({
       component: () => import('./views/S3.vue'),
     },
     {
-      path: '/s3/:profile/path/:path',
+      path: '/s3/:profile/:path*',
       name: 's3pathed',
       component: () => import('./views/S3.vue'),
     },

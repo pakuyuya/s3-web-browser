@@ -1,6 +1,6 @@
 import {S3Profile} from './profile';
 
-export interface S3DirectoryState {
+export interface S3DirState {
     s3profile?: S3Profile;
     currentDir?: string;
     dirBreads?: string[];
@@ -18,7 +18,7 @@ export enum S3ItemType {
 }
 
 
-const state: S3DirectoryState = {
+const state: S3DirState = {
     s3profile: undefined,
     currentDir: '',
     dirBreads: [],
@@ -27,8 +27,11 @@ const state: S3DirectoryState = {
 const actions = {
 
 };
-const mutations = {
 
+const mutations = {
+    changeProfile(s: S3DirState, payload: any) {
+        s.s3profile = payload.profile;
+    },
 };
 export default {
     namespaced: true,

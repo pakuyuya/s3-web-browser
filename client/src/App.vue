@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer app clipped fixed v-model="leftDrawer" :mini-variant="leftMiniVariant">
       <v-list dense>
-        <v-list-item v-for="profile in $store.state.profile.list" :key="profile.id" @click="selectProfile(profile.id)">
+        <v-list-item v-for="profile in $store.state.profile.list" :key="profile.id" @click="selectProfile(profile)">
           <v-list-item-action>
             <v-icon>cloud_circle</v-icon>
           </v-list-item-action>
@@ -43,6 +43,7 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import S3list from './components/S3list.vue';
 
+import {S3Profile} from './store/modules/profile';
 
 @Component
 export default class App extends Vue {
@@ -52,8 +53,9 @@ export default class App extends Vue {
 
   public rightDrawer: boolean = false;
 
-  public selectProfile(id: string) {
-    // TODO:
+  public selectProfile(profile: S3Profile) {
+    this.$store.commit('s3dir/changeProfile', {profile});
+    this.$router.push(`/s3/${profile.id}/path/`);
   }
 }
 </script>
