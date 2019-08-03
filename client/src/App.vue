@@ -24,7 +24,6 @@
       </v-btn>
     </v-app-bar>
 
-    
     <v-content><router-view/></v-content>
 
     <v-navigation-drawer app fixed right v-model="rightDrawer">
