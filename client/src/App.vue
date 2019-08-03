@@ -13,7 +13,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left clipped-right absolute>
+    <v-app-bar dark app clipped-left clipped-right absolute color="#2277e0">
       <v-toolbar-title>
         S3 Web Browser
       </v-toolbar-title>
@@ -43,10 +43,14 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import S3list from './components/S3list.vue';
 
-import {S3Profile} from './store/modules/profile';
+import {ProfileStore, S3Profile} from './store/modules/profile';
+import {S3dirStore} from './store/modules/s3dir';
 
 @Component
 export default class App extends Vue {
+  public profile = ProfileStore.CreateProxy( this.$store, ProfileStore );
+  public s3dir = S3dirStore.CreateProxy( this.$store, S3dirStore );
+
   public leftDrawer: boolean = true;
 
   public leftMiniVariant: boolean = false;
@@ -54,8 +58,8 @@ export default class App extends Vue {
   public rightDrawer: boolean = false;
 
   public selectProfile(profile: S3Profile) {
-    this.$store.commit('s3dir/changeProfile', {profile});
-    this.$router.push(`/s3/${profile.id}/path/`);
+    this.s3dir.updateProfile({profile});
+    this.$router.push(`/s3/${profile.id}/`);
   }
 }
 </script>

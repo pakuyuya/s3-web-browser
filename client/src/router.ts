@@ -14,12 +14,12 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/s3/:profile',
+      path: '/s3/:profileid',
       name: 's3',
       component: () => import('./views/S3.vue'),
     },
     {
-      path: '/s3/:profile/:path*',
+      path: '/s3/:profileid/:path*',
       name: 's3pathed',
       component: () => import('./views/S3.vue'),
     },

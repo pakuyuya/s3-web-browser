@@ -8613,6 +8613,19 @@ vuetify@^2.0.1:
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-2.0.1.tgz#27b2ea314f5eba7eff9993d4d97110d5563a4b57"
   integrity sha512-UOBpJQdEwvoqH7zXEVo0YGLT5bKKXZxa8+MzBKaQK/Evbo5XjbEt5mxbO7f/9bCO5XqM825u4eNxcEUhV4sT1Q==
 
+vuex-class-component@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/vuex-class-component/-/vuex-class-component-1.9.0.tgz#655590e7f5fb38d4d9dcb836ca3a03fef88a7062"
+  integrity sha512-zMv9e50OAWoLLZoXTKh29wrqZOuK27j0N+JasTT3rxrk58ax33M4vVeqPWxsOF8G5kuKX08Ioo4+78ivJXZ7ag==
+  dependencies:
+    object.getownpropertydescriptors "^2.0.3"
+    rimraf "^2.6.3"
+
+vuex-module-decorators@^0.9.9:
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/vuex-module-decorators/-/vuex-module-decorators-0.9.9.tgz#3d278531cbd41435b3cba255a6e4db8a2bb3bf5b"
+  integrity sha512-SxCyuv9FEwUc2jKfCtAHaMDwsC0acVLBeZo6OUlrA8e+tzT5qwvnZevrRIpPJY4nfiiBvIBTYFu+3l+c2Bemeg==
+
 vuex@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.1.1.tgz#0c264bfe30cdbccf96ab9db3177d211828a5910e"
