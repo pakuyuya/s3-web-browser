@@ -1,6 +1,11 @@
-const state = {
-    login: undefined,
+interface UserState {
+    name: string;
+}
+
+const state: UserState = {
+    name: 'Guest',
 };
+
 const actions = {
 
 };

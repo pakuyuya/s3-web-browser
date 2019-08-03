@@ -14,9 +14,14 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('./views/S3Dir.vue'),
+      path: '/s3/:profile',
+      name: 's3',
+      component: () => import('./views/S3.vue'),
+    },
+    {
+      path: '/s3/:profile/path/:path',
+      name: 's3pathed',
+      component: () => import('./views/S3.vue'),
     },
   ],
 });
