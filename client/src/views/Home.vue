@@ -2,7 +2,7 @@
   <v-list-item>
     <v-list-item-content>
       <v-list-item-title>
-        プロファイルを選択してください。
+        接続先を選択してください。
       </v-list-item-title>
     </v-list-item-content>
   </v-list-item>

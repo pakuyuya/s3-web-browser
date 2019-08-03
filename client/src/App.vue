@@ -18,7 +18,7 @@
         S3 Web Browser
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-title>{{ $store.state.user }}</v-toolbar-title>
+      <v-toolbar-title>{{ $store.state.user.login }}</v-toolbar-title>
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>account-circle</v-icon>
       </v-btn>
