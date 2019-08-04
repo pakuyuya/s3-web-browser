@@ -5,13 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	"s3-web-brawser/server/go/setting"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
-	"s3-web-brawser/server/go/controller/api"
-	"s3-web-brawser/server/go/controller/page"
-
-	"s3-web-brawser/server/go/setting"
+	
 )
 
 func main() {
@@ -61,4 +59,13 @@ func main() {
 		fmt.Println("run http server at " + server.Addr)
 	}
 	server.ListenAndServe()
+}
+
+func loginFilterMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		loginInfo := session.Get(loginsession.SessionKey)
+
+		c.Next()
+	}
 }
