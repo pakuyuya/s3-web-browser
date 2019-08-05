@@ -1,5 +1,5 @@
 export interface S3Profile {
-    uuid: string;
+    profileid: string;
     name: string;
     bucket: string;
     basepath: string;

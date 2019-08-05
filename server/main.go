@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	api "s3-web-brawser/server/go/controller/api"
+	page "s3-web-brawser/server/go/controller/page"
 
+	loginsession "s3-web-brawser/server/go/domain/loginsession"
 	"s3-web-brawser/server/go/setting"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-	
 )
 
 func main() {
@@ -65,6 +68,11 @@ func loginFilterMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		loginInfo := session.Get(loginsession.SessionKey)
+
+		if loginInfo == nil {
+			c.Redirect(http.StatusMovedPermanently, "/login")
+			return
+		}
 
 		c.Next()
 	}

@@ -11,6 +11,11 @@ type ServerSettingType struct {
 	Port        string `yaml:"Port"`
 	Debug       bool   `yaml:"Debug"`
 	TextdataDir string `yaml:"TextdataDir"`
+	DBHost      string `yaml:"DBHost"`
+	DBPort      string `yaml:"DBPort"`
+	DBUser      string `yaml:"DBUser"`
+	DBPass      string `yaml:"DBPass"`
+	DBName      string `yaml:"DBName"`
 }
 
 var ServerSetting *ServerSettingType

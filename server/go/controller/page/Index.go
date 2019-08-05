@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// IndexGET is a function implements "/" path.
 func IndexGET(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{})
+	c.Redirect(http.StatusMovedPermanently, "/browser")
 }
