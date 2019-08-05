@@ -20,3 +20,15 @@ func Connection() (*sql.Conn, error) {
 	connstr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, pass, dbname)
 	return sql.Open("postgres", connstr)
 }
+
+// ConnectionForTest is a function that get test specified db
+func ConnectionForTest() (*sql.Conn, error) {
+	host := "db"
+	port := "5432"
+	user := "postgres"
+	pass := "passwrd"
+	dbname := "s3webbrowser"
+
+	connstr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, pass, dbname)
+	return sql.Open("postgres", connstr)
+}

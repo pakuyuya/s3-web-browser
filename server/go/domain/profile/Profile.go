@@ -19,7 +19,7 @@ type Profile struct {
 }
 
 // GetAll is a function that get all profiles from repositoy.
-func GetAll(conn: *sql.Tx) ([]Profile, error) {
+func SelectAll(conn: *sql.Tx) ([]Profile, error) {
 	rows, err := conn.Query("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles");
 
 	if err != nil {
