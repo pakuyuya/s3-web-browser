@@ -1,7 +1,8 @@
 package profile
 
 import (
-    "database/sql"
+	"database/sql"
+	"fmt"
 
     _ "github.com/lib/pq"
 )
@@ -15,7 +16,11 @@ type Profile struct {
 	Basepath string
 }
 
-// GetAll is a function that get all profiles from repositoy.
+func (m *Profile) String() string {
+	return fmt.Sprintf("Profileid:%s, Profilename:%s, Connjson:%s, Bucket:%s, Basepath:%s", m.Profileid, m.Profilename, m.Connjson, m.Bucket, m.Basepath)
+}
+
+// SelectAll is a function that get all profiles from repositoy.
 func SelectAll(conn *sql.Tx) ([]Profile, error) {
 	rows, err := conn.Query("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles");
 
@@ -34,8 +39,8 @@ func SelectAll(conn *sql.Tx) ([]Profile, error) {
 	return profiles, nil
 }
 
-// GetAll is a function that get all profiles from repositoy.
-func SelectById(conn *sql.Tx, profileid string) (*Profile, error) {
+// SelectByID is a function that get all profiles from repositoy.
+func SelectByID(conn *sql.Tx, profileid string) (*Profile, error) {
 	row := conn.QueryRow("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles WHERE profileid = $1;", profileid);
 
 	profile := Profile{}
@@ -61,8 +66,8 @@ func Insert(conn *sql.Tx, m *Profile) (int64, error) {
 	return r.RowsAffected()
 }
 
-// Insert is a function that insert a record to repositoy.
-func UpdateById(conn *sql.Tx, m *Profile) (int64, error) {
+// UpdateByID is a function that insert a record to repositoy.
+func UpdateByID(conn *sql.Tx, m *Profile) (int64, error) {
 	query := "UPDATE s3web.profiles SET profilename=$2, connjson=$3, bucket=$4, basepath=$5, update_at=CURRENT_TIMESTAMP WHERE profileid=$1;"
 	args := []interface{}{m.Profileid, m.Profilename, m.Connjson, m.Connjson, m.Bucket, m.Basepath}
 
@@ -74,13 +79,13 @@ func UpdateById(conn *sql.Tx, m *Profile) (int64, error) {
 	return r.RowsAffected()
 }
 
-// Insert is a function that insert a record to repositoy.
-func DeleteById(conn *sql.Tx, profileid string) (error) {
+// DeleteByID is a function that insert a record to repositoy.
+func DeleteByID(conn *sql.Tx, profileid string) (int64, error) {
 	query := "DELETE FROM s3web.profiles WHERE profileid=$1;"
 
-	_r, err := conn.Query(query, profileid);
+	r, err := conn.Exec(query, profileid);
 	if err != nil {
-		return err
+		return 0, err
 	}
 	return r.RowsAffected()
 }
