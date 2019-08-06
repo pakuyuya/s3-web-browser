@@ -49,36 +49,38 @@ func SelectById(conn *sql.Tx, profileid string) (*Profile, error) {
 }
 
 // Insert is a function that insert a record to repositoy.
-func Insert(conn *sql.Tx, m *Profile) (error) {
+func Insert(conn *sql.Tx, m *Profile) (int64, error) {
 	query := "INSERT INTO s3web.profiles(profileid, profilename, connjson, bucket, basepath, create_at, update_at) VALUES($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);"
 	args := []interface{}{m.Profileid, m.Profilename, m.Connjson, m.Connjson, m.Bucket, m.Basepath}
 
-	_, err := conn.Exec(query, args...);
+	r, err := conn.Exec(query, args...);
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+
+	return r.RowsAffected()
 }
 
 // Insert is a function that insert a record to repositoy.
-func UpdateById(conn *sql.Tx, m *Profile) (error) {
+func UpdateById(conn *sql.Tx, m *Profile) (int64, error) {
 	query := "UPDATE s3web.profiles SET profilename=$2, connjson=$3, bucket=$4, basepath=$5, update_at=CURRENT_TIMESTAMP WHERE profileid=$1;"
 	args := []interface{}{m.Profileid, m.Profilename, m.Connjson, m.Connjson, m.Bucket, m.Basepath}
 
-	_, err := conn.Exec(query, args...);
+	r, err := conn.Exec(query, args...);
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+
+	return r.RowsAffected()
 }
 
 // Insert is a function that insert a record to repositoy.
 func DeleteById(conn *sql.Tx, profileid string) (error) {
 	query := "DELETE FROM s3web.profiles WHERE profileid=$1;"
 
-	_, err := conn.Query(query, profileid);
+	_r, err := conn.Query(query, profileid);
 	if err != nil {
 		return err
 	}
-	return nil
+	return r.RowsAffected()
 }
