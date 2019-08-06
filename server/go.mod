@@ -1,4 +1,4 @@
-module s3-web-brawser/server
+module s3-web-browser/server
 
 go 1.12
 
@@ -19,6 +19,7 @@ require (
 	github.com/haya14busa/goplay v1.0.0 // indirect
 	github.com/josharian/impl v0.0.0-20190715203526-f0d59e96e372 // indirect
 	github.com/karrick/godirwalk v1.10.12 // indirect
+	github.com/lib/pq v1.2.0
 	github.com/mdempsky/gocode v0.0.0-20190203001940-7fb65232883f // indirect
 	github.com/pakuyuya/gopathmatch v0.0.0-20190209191252-b5bd8216da6e
 	github.com/pkg/errors v0.8.1 // indirect

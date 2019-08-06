@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	api "s3-web-brawser/server/go/controller/api"
-	page "s3-web-brawser/server/go/controller/page"
+	api "s3-web-browser/server/go/controller/api"
+	page "s3-web-browser/server/go/controller/page"
 
-	loginsession "s3-web-brawser/server/go/domain/loginsession"
-	"s3-web-brawser/server/go/setting"
+	loginsession "s3-web-browser/server/go/domain/loginsession"
+	"s3-web-browser/server/go/setting"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"

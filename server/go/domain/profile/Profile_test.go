@@ -4,7 +4,7 @@ package profile
 import (
 	"testing"
 	"reflect"
-	"s3webbrowser/server/go/domain/db"
+	"s3-web-browser/server/go/domain/db"
 )
 
 
