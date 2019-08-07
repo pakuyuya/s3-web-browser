@@ -4,14 +4,14 @@ CREATE SCHEMA s3web;
 
 CREATE TABLE s3web.users(
     id SERIAL NOT NULL,
-    display VARCHAR(128),
+    username VARCHAR(128),
     loginid VARCHAR(60),
     password_sha256 VARCHAR(128),
     create_at TIMESTAMP,
     update_at TIMESTAMP
 );
 
-INSERT INTO s3web.users (display, loginid, password_sha256, create_at, update_at)
+INSERT INTO s3web.users (username, loginid, password_sha256, create_at, update_at)
   VALUES ('Admin', 'admin', digest('password', 'sha256'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 CREATE TABLE s3web.profiles(

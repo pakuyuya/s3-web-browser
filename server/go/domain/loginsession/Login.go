@@ -1,6 +1,12 @@
 package login
 
-import "errors"
+import (
+	"database/sql"
+	"fmt"
+
+	"errors"
+	_ "github.com/lib/pq"
+)
 
 // Logininfo is a struct for manage login session.
 type Logininfo struct {

@@ -22,7 +22,7 @@ func (m *Profile) String() string {
 
 // SelectAll is a function that get all profiles from repositoy.
 func SelectAll(conn *sql.Tx) ([]Profile, error) {
-	rows, err := conn.Query("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles");
+	rows, err := conn.Query("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles ORDER BY profileid FOR READ ONLY;");
 
 	if err != nil {
 		return nil, err
