@@ -1,10 +1,12 @@
+CREATE extension pgcrypto;
+
 CREATE SCHEMA s3web;
 
 CREATE TABLE s3web.users(
     id SERIAL NOT NULL,
     display VARCHAR(128),
     loginid VARCHAR(60),
-    password_sha256 VARCHAR(64),
+    password_sha256 VARCHAR(128),
     create_at TIMESTAMP,
     update_at TIMESTAMP
 );

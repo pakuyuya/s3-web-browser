@@ -73,7 +73,7 @@ func TestTransaction(t *testing.T) {
 			continue
 		}
 
-		if !reflect.DeepEqual(profile, foundProfile) {
+		if !reflect.DeepEqual(profile, *foundProfile) {
 			t.Errorf("Actual: %s, but excepted: %s", profile.String(), foundProfile.String())
 		}
 	}
