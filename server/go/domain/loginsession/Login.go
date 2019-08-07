@@ -3,6 +3,8 @@ package login
 import (
 	"database/sql"
 	"fmt"
+	"s3-web-browser/server/go/domain/db"
+	"s3-web-browser/server/go/domain/user"
 
 	"errors"
 	_ "github.com/lib/pq"
@@ -17,15 +19,23 @@ type Logininfo struct {
 
 // Auth is a function that authentication user.
 func Auth(loginid string, password string) (*Logininfo, error) {
-	// TODO:
 
-	if loginid != "user" || password != "pass" {
+	conn, err := db.Connection()
+	if err != nil {
+		return nil, err
+	}
+	tx, err := conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+	user, err := user.SelectForAuth(loginid, password)
+	if user == nil {
 		return nil, errors.New("ログインIDまたはパスワードが違います")
 	}
 
 	info := Logininfo{
-		UserID:    loginid,
-		UserName:  "テストユーザー",
+		UserID:    user.Loginid,
+		UserName:  user.Username,
 		IsEnabled: true,
 	}
 

@@ -52,6 +52,20 @@ func SelectByID(conn *sql.Tx, id int) (*User, error) {
 	return &user, nil
 }
 
+// SelectForAuth is a function that try get a record using login infomation.
+func SelectForAuth(conn *sql.Tx, loginid string, password string) (*User, error) {
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256);", loginid, password);
+
+	user := User{}
+	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 // Insert is a function that insert a record to repositoy.
 func Insert(conn *sql.Tx, m *User) (int, error) {
 	query := "INSERT INTO s3web.users(username, loginid, password_sha256, create_at, update_at) VALUES($1, $2, digest($3, 'sha256'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;"

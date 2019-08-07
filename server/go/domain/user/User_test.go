@@ -64,6 +64,13 @@ func TestTransaction(t *testing.T) {
 		"********" != userInserted.Password {
 		t.Errorf("Actual: %s, but excepted: %s", user.String(), userUpdateed.String())
 	}
+
+	_, err = SelectForAuth(tx, user.Loginid, user.Password)
+	if err != nil {
+		t.Fatalf("failed test %#v", err)
+		tx.Rollback()
+		return
+	}
 	
 	_, err = SelectAll(tx)
 	if err != nil {
