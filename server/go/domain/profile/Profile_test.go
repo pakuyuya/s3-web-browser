@@ -62,7 +62,7 @@ func TestTransaction(t *testing.T) {
 	}
 
 	for _, profile := range profiles {
-		var foundProfile *Profile = nil 
+		var foundProfile *Profile
 		for _, basep := range baseprofile {
 			if profile.Profileid == basep.Profileid {
 				foundProfile = &basep
