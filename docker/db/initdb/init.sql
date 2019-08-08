@@ -19,7 +19,7 @@ CREATE TABLE s3web.profiles(
     profilename VARCHAR(128),
     connjson VARCHAR(1024),
     bucket VARCHAR(128),
-    basepath VARCHAR(523),
+    basepath VARCHAR(512),
     create_at TIMESTAMP,
     update_at TIMESTAMP
 );

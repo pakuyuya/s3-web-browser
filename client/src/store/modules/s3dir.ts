@@ -11,6 +11,8 @@ export interface S3Item {
     type: S3ItemType;
     name: string;
     fullpath: string;
+    size: string;
+    lastModified: string;
 }
 
 export enum S3ItemType {
@@ -31,11 +33,15 @@ export class S3dirStore extends VuexModule {
             type: S3ItemType.File,
             name: 'file.txt',
             fullpath: '/file',
+            size: "10 Bytes",
+            lastModified: "2019/01/01 10:00:00",
         },
         {
             type: S3ItemType.Directory,
             name: 'directory',
             fullpath: '/directory',
+            size: "10 Bytes",
+            lastModified: "2019/01/01 10:00:00",
         },
     ];
 
