@@ -2,7 +2,6 @@ package login
 
 import (
 	"database/sql"
-	"fmt"
 	"s3-web-browser/server/go/domain/db"
 	"s3-web-browser/server/go/domain/user"
 
@@ -18,17 +17,8 @@ type Logininfo struct {
 }
 
 // Auth is a function that authentication user.
-func Auth(loginid string, password string) (*Logininfo, error) {
-
-	conn, err := db.Connection()
-	if err != nil {
-		return nil, err
-	}
-	tx, err := conn.Begin()
-	if err != nil {
-		return nil, err
-	}
-	user, err := user.SelectForAuth(loginid, password)
+func Auth(tx *sql.Tx, loginid string, password string) (*Logininfo, error) {
+	user, err := user.SelectForAuth(tx, loginid, password)
 	if user == nil {
 		return nil, errors.New("ログインIDまたはパスワードが違います")
 	}

@@ -13,9 +13,12 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 func main() {
+	log.setFlags(log.Lshortfile)
+
 	var err error
 	err = setting.LoadSetting()
 	if err != nil {
@@ -47,8 +50,9 @@ func main() {
 	// api
 	gapi := router.Group("/api")
 	{
+		gapi.POST("/login", api.LoginPOST)
+		gpai.GET("/profiles", api.ProfilesGET)
 		gapi.GET("/serverstatus", api.ServerstatusGET)
-		// TODO:
 	}
 
 	server := &http.Server{

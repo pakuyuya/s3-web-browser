@@ -46,6 +46,7 @@ github.com/gorilla/sessions v1.2.0 h1:S7P+1Hm5V/AT9cjEcUD5uDaQSX0OE577aCXgoaKpYb
 github.com/gorilla/sessions v1.2.0/go.mod h1:dk2InVEVJ0sfLlnXv9EAgkf6ecYs/i80K/zI+bUmuGM=
 github.com/haya14busa/goplay v1.0.0 h1:ED4BMrGQ3WH7H3YXrcnWMVzj1xeSepaYTkLh1DtFi/4=
 github.com/haya14busa/goplay v1.0.0/go.mod h1:TUcdOVV7TTx0Fo9CmTf16Erfju/DzXTbB70+RYb43h8=
+github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af h1:pmfjZENx5imkbgOkpRUYLnmbU7UEFbjtDA2hxJ1ichM=
 github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/josharian/impl v0.0.0-20190715203526-f0d59e96e372 h1:zfpL1AnHJLc+2j3QphUpADoPRCnHMFCUE83V+XgYqhA=
 github.com/josharian/impl v0.0.0-20190715203526-f0d59e96e372/go.mod h1:t4Tr0tn92eq5ISef4cS5plFAMYAqZlAXtgUcKE6y8nw=

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,22 +9,17 @@ import (
 	"s3-web-browser/server/go/domain/profile"
 )
 
-// ProfilesGET is a implement of WebAPI
+// ProfilesGET is a implement as WebAPI
 func ProfilesGET(c *gin.Context) {
-	conn, err := db.Connection()
+	conn, tx, err := getConnTx()
 	if err != nil {
-		// TODO: abort
-	}
-	defer conn.Close()
-	tx, err := conn.Begin()
-	if err != nil {
-		// TODO: abort
+		panic(err)
 	}
 
 	profiles, err := profile.SelectAll(tx)
-
 	if err != nil {
-		// TODO: abort
+		panic(err)
 	}
+
 	c.JSON(http.StatusOK, profiles)
 }

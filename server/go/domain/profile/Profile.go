@@ -3,7 +3,7 @@ package profile
 import (
 	"database/sql"
 	"fmt"
-
+    // PostgreSQL driver
     _ "github.com/lib/pq"
 )
 
@@ -18,6 +18,18 @@ type Profile struct {
 
 func (m *Profile) String() string {
 	return fmt.Sprintf("Profileid:%s, Profilename:%s, Connjson:%s, Bucket:%s, Basepath:%s", m.Profileid, m.Profilename, m.Connjson, m.Bucket, m.Basepath)
+}
+
+// FormatBasepath is a function that normalize string as basepath
+func FormatBasepath(basepath string) string {
+	basepath = strings.TrimPrefix("/")
+	if basepath == "" {
+		return basepath
+	}
+	if !strings.HasSuffix(basepath, "/") {
+		basepath = basepath + "/"
+	}
+	return basepath
 }
 
 // SelectAll is a function that get all profiles from repositoy.

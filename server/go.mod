@@ -7,7 +7,7 @@ require (
 	github.com/acroca/go-symbols v0.1.1 // indirect
 	github.com/alecthomas/gometalinter v3.0.0+incompatible // indirect
 	github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4 // indirect
-	github.com/aws/aws-sdk-go v1.22.1 // indirect
+	github.com/aws/aws-sdk-go v1.22.1
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
 	github.com/davidrjenni/reftools v0.0.0-20190411195930-981bbac422f8 // indirect
 	github.com/fatih/gomodifytags v1.0.0 // indirect
