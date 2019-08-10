@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 
-type ConnParameter {
+// ConnParameter is a parameter to connect S3
+type ConnParameter struct {
 	Type string `json:"type"`
 	Region string `json:"region"`
 	Profile  string `json:"profile"`
@@ -18,7 +19,8 @@ type ConnParameter {
 	Secretkey string `json:"secretkey"`
 }
 
-type S3Item {
+// S3Item is a struct for infomation of S3 object / S3 prefix
+type S3Item struct {
     Type: string
     Name: string
 	Fullpath: string
@@ -26,7 +28,7 @@ type S3Item {
 	LastModified string
 }
 
-
+// CreateSession is a function to create session to AWS
 func CreateSession(connJson string): (*session.Session, error) {
 	param := ConnParameter{}
 	if err := json.Unmarshal(param, connJson); err != nil {
@@ -66,6 +68,7 @@ func credentialWithAccesskey(*ConnParameter param) (*credentials.Credentials, er
 }
 
 
+// List is a function that get list of object / folder in S3
 func List(*session.Session sess, string bucket, string prefix) (S3Item[], err) {
 	svc := s3.New(sess)
 
@@ -107,6 +110,25 @@ func List(*session.Session sess, string bucket, string prefix) (S3Item[], err) {
 			LastModified: content.LastModified,
 		})
 	}
+}
+
+// List is a function that download a file in S3 and write body to parametered writer
+func DownloadStream(*session.Session sess, string bucket, string key, io.Writer w) err {
+	svc := s3.New(sess)
+
+	resp, err := svc.GetObject(&s3.ListObjectsInput{
+		Bucket: aws.String(bucketName),
+		Key: aws.String(key),
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(w, resp.Body)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func sprintSize(n int64) string {

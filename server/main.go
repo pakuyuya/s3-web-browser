@@ -42,17 +42,29 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 
 	// static
-	gpage := router.Group("/")
+	gpagenologin := router.Group("/")
 	{
-		gpage.GET("/", page.IndexGET)
-		gpage.Static("/static", "./static")
+		gpagenologin.GET("/", page.IndexGET)
+		gpagenologin.Static("/static", "./static")
+		gpagenologin.GET("/logout", api.LogoutGET)
+	}
+	gpagelogin := router.Group("/")
+	{
+		gpagelogin.Middleware(loginFilterMiddleware())
+		gpagelogin.GET("/s3", page.IndexGET)
 	}
 	// api
-	gapi := router.Group("/api")
+	gapinologin := router.Group("/api")
 	{
-		gapi.POST("/login", api.LoginPOST)
+		gapinologin.POST("/login", api.LoginPOST)
+		gapinologin.GET("/serverstatus", api.ServerstatusGET)
+	}
+	gapilogin := router.Group("/api")
+	{
+		gpagelogin.Middleware(loginFilterMiddleware())
 		gpai.GET("/profiles", api.ProfilesGET)
-		gapi.GET("/serverstatus", api.ServerstatusGET)
+		gpai.POST("/profile", api.ProfilesPOST)
+		gpai.PUT("/profile", api.ProfilesPUT)
 	}
 
 	server := &http.Server{
