@@ -1,4 +1,7 @@
 import {S3Profile} from './profile';
+import axios from 'axios';
+import qs from 'qs';
+import * as common from '../../common';
 
 export interface S3DirState {
     s3profile?: S3Profile;
@@ -12,7 +15,7 @@ export interface S3Item {
     name: string;
     fullpath: string;
     size: string;
-    lastModified: string;
+    lastmodified: string;
 }
 
 export enum S3ItemType {
@@ -33,22 +36,43 @@ export class S3dirStore extends VuexModule {
             type: S3ItemType.File,
             name: 'file.txt',
             fullpath: '/file',
-            size: "10 Bytes",
-            lastModified: "2019/01/01 10:00:00",
+            size: '10 Bytes',
+            lastmodified: '2019/01/01 10:00:00',
         },
         {
             type: S3ItemType.Directory,
             name: 'directory',
             fullpath: '/directory',
-            size: "10 Bytes",
-            lastModified: "2019/01/01 10:00:00",
+            size: '10 Bytes',
+            lastmodified: '2019/01/01 10:00:00',
         },
     ];
 
 
     @action public async setCurrentDir(payload: any) {
-        this.updateCurrentDir({ path: payload.path });
-        this.updateBreadcrumbs();
+        if (!this.s3profile) {
+            return;
+        }
+
+        const params = {
+            profileid: this.s3profile.id,
+            path: payload.path,
+        };
+        const url = common.resolveAPIUrl('s3dir?' + qs.stringify(params));
+
+        axios.get(url)
+            .then((res) => {
+                this.files = res.data.map((item: any) => ({
+                   type: item.type,
+                   name: item.name,
+                   fullpath: item.fullpath,
+                   size: item.size,
+                   lastmodified: item.lastmodified,
+                }));
+                this.updateCurrentDir({ path: payload.path });
+                this.updateBreadcrumbs();
+            })
+            .catch();
     }
 
     @mutation public updateProfile({profile}: any) {
