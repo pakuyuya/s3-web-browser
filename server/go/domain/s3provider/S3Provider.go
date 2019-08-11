@@ -43,7 +43,7 @@ func CreateSession(connJSON string) (*session.Session, error) {
 
 	var c *credentials.Credentials
 	switch param.Type {
-	case "inherit":
+	case "credentialfile":
 		c, err = credentialWithInherit(&param)
 	case "accesskey":
 		c, err = credentialWithAccesskey(&param)

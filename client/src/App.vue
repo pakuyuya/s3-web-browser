@@ -2,6 +2,11 @@
   <v-app>
     <v-navigation-drawer app clipped fixed v-model="leftDrawer" :mini-variant="leftMiniVariant">
       <v-list dense>
+        <v-list-item>
+          <v-btn tile outlined color="success">
+            <v-icon left>add</v-icon> Add S3 profile
+          </v-btn>
+        </v-list-item>
         <v-list-item v-for="profile in $store.state.profile.list" :key="profile.id" @click="selectProfile(profile)">
           <v-list-item-action>
             <v-icon>cloud_circle</v-icon>
@@ -9,6 +14,9 @@
           <v-list-item-content>
             <v-list-item-action>{{ profile.name }}</v-list-item-action>
           </v-list-item-content>
+          <v-list-item-action>
+            <v-icon>close</v-icon>
+          </v-list-item-action>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
