@@ -8,5 +8,5 @@ import (
 
 // IndexGET is a function implements "/" path.
 func IndexGET(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, "/browser")
+	c.Redirect(http.StatusSeeOther, "/browser")
 }

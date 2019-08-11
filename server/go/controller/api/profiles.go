@@ -1,11 +1,9 @@
 package api
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"s3-web-browser/server/go/domain/db"
 	"s3-web-browser/server/go/domain/profile"
 )
 
@@ -15,6 +13,7 @@ func ProfilesGET(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+	defer conn.Close()
 
 	profiles, err := profile.SelectAll(tx)
 	if err != nil {

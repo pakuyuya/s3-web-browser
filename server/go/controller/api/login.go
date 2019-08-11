@@ -1,9 +1,9 @@
 package api
 
 import (
-	"log"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/loginsession"
 )
@@ -21,8 +21,13 @@ func LoginPOST(c *gin.Context) {
 
 	logininfo, err := loginsession.Auth(tx, loginid, password)
 	if err != nil {
-		return responseError(c, http.StatusUnauthorized, "IDまたはパスワードが違います")
+		responseError(c, http.StatusUnauthorized, "IDまたはパスワードが違います")
+		return
 	}
+
+	session := sessions.Default(c)
+	session.Set(loginsession.SessionKey, logininfo)
+	session.Save()
 
 	c.JSON(http.StatusOK, gin.H{
 		"logininfo": logininfo,

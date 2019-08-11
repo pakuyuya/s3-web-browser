@@ -2,6 +2,7 @@ package api
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"s3-web-browser/server/go/domain/db"
 )
 
 func responseError(c *gin.Context, errorcode int, msg string) {
@@ -11,7 +12,7 @@ func responseError(c *gin.Context, errorcode int, msg string) {
 	})
 }
 
-func getConnTx() (*sql.Database, *sql.Tx, error) {
+func getConnTx() (*sql.DB, *sql.Tx, error) {
 	conn, err := db.Connection()
 	if err != nil {
 		return nil, nil, err

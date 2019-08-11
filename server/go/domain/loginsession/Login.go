@@ -1,11 +1,10 @@
-package login
+package loginsession
 
 import (
 	"database/sql"
-	"s3-web-browser/server/go/domain/db"
 	"s3-web-browser/server/go/domain/user"
-
 	"errors"
+    // PostgreSQL driver
 	_ "github.com/lib/pq"
 )
 
@@ -18,7 +17,7 @@ type Logininfo struct {
 
 // Auth is a function that authentication user.
 func Auth(tx *sql.Tx, loginid string, password string) (*Logininfo, error) {
-	user, err := user.SelectForAuth(tx, loginid, password)
+	user, _ := user.SelectForAuth(tx, loginid, password)
 	if user == nil {
 		return nil, errors.New("ログインIDまたはパスワードが違います")
 	}

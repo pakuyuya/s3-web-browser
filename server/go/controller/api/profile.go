@@ -1,11 +1,9 @@
 package api
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"s3-web-browser/server/go/domain/db"
 	"s3-web-browser/server/go/domain/profile"
 )
 
@@ -19,7 +17,7 @@ type Profile struct {
 
 // ProfilePOST is a implement as WebAPI
 func ProfilePOST(c *gin.Context) {
-	from := Profile{}
+	form := Profile{}
 	if err := c.Bind(&form); err != nil {
 		responseError(c, http.StatusBadRequest, "bad request")
 		return
@@ -32,12 +30,12 @@ func ProfilePOST(c *gin.Context) {
 	defer conn.Close()
 
 	p := profile.Profile {
-		Profilename: Profile.Profilename,
-		Connjson: Profile.Connjson,
-		Bucket: Profile.Bucket,
-		Basepath: Profile.Basepath,
+		Profilename: form.Profilename,
+		Connjson: form.Connjson,
+		Bucket: form.Bucket,
+		Basepath: profile.FormatBasepath(form.Basepath),
 	}
-	_, err := profile.Insert(tx, &p)
+	_, err = profile.Insert(tx, &p)
 	if err != nil {
 		tx.Rollback()
 		panic(err)
@@ -54,7 +52,7 @@ func ProfilePUT(c *gin.Context) {
 		return
 	}
 
-	from := Profile{}
+	form := Profile{}
 	if err := c.Bind(&form); err != nil {
 		responseError(c, http.StatusBadRequest, "更新に失敗しました")
 		return
@@ -68,12 +66,12 @@ func ProfilePUT(c *gin.Context) {
 
 	p := profile.Profile {
 		Profileid: id,
-		Profilename: Profile.Profilename,
-		Connjson: Profile.Connjson,
-		Bucket: Profile.Bucket,
-		Basepath: Profile.Basepath,
+		Profilename: form.Profilename,
+		Connjson: form.Connjson,
+		Bucket: form.Bucket,
+		Basepath: profile.FormatBasepath(form.Basepath),
 	}
-	cnt, err := profile.Update(tx, &p)
+	cnt, err := profile.UpdateByID(tx, &p)
 	if err != nil {
 		tx.Rollback()
 		panic(err)

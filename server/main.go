@@ -13,12 +13,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func main() {
-	log.setFlags(log.Lshortfile)
-
 	var err error
 	err = setting.LoadSetting()
 	if err != nil {
@@ -45,12 +42,12 @@ func main() {
 	gpagenologin := router.Group("/")
 	{
 		gpagenologin.GET("/", page.IndexGET)
+		gpagenologin.GET("/logout", page.LogoutGET)
 		gpagenologin.Static("/static", "./static")
-		gpagenologin.GET("/logout", api.LogoutGET)
 	}
 	gpagelogin := router.Group("/")
 	{
-		gpagelogin.Middleware(loginFilterMiddleware())
+		gpagelogin.Use(loginFilterMiddleware())
 		gpagelogin.GET("/s3", page.IndexGET)
 	}
 	// api
@@ -61,10 +58,10 @@ func main() {
 	}
 	gapilogin := router.Group("/api")
 	{
-		gpagelogin.Middleware(loginFilterMiddleware())
-		gpai.GET("/profiles", api.ProfilesGET)
-		gpai.POST("/profile", api.ProfilesPOST)
-		gpai.PUT("/profile", api.ProfilesPUT)
+		gapilogin.Use(loginFilterMiddleware())
+		gapilogin.GET("/profiles", api.ProfilesGET)
+		gapilogin.POST("/profile", api.ProfilePOST)
+		gapilogin.PUT("/profile", api.ProfilePUT)
 	}
 
 	server := &http.Server{
@@ -86,7 +83,7 @@ func loginFilterMiddleware() gin.HandlerFunc {
 		loginInfo := session.Get(loginsession.SessionKey)
 
 		if loginInfo == nil {
-			c.Redirect(http.StatusMovedPermanently, "/login")
+			c.Redirect(http.StatusSeeOther, "/login")
 			return
 		}
 

@@ -3,6 +3,7 @@ package profile
 import (
 	"database/sql"
 	"fmt"
+	"strings"
     // PostgreSQL driver
     _ "github.com/lib/pq"
 )
@@ -22,7 +23,7 @@ func (m *Profile) String() string {
 
 // FormatBasepath is a function that normalize string as basepath
 func FormatBasepath(basepath string) string {
-	basepath = strings.TrimPrefix("/")
+	basepath = strings.TrimPrefix(basepath, "/")
 	if basepath == "" {
 		return basepath
 	}
