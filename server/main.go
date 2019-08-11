@@ -61,7 +61,7 @@ func main() {
 		gapilogin.Use(loginFilterMiddleware())
 		gapilogin.GET("/profiles", api.ProfilesGET)
 		gapilogin.POST("/profile", api.ProfilePOST)
-		gapilogin.PUT("/profile", api.ProfilePUT)
+		gapilogin.PUT("/profile/:id", api.ProfilePUT)
 	}
 
 	server := &http.Server{
