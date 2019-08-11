@@ -5,8 +5,9 @@ import (
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/session"
     "github.com/aws/aws-sdk-go/aws/credentials"
-    "github.com/aws/aws-sdk-go/service/s3/s3manager"
+    "github.com/aws/aws-sdk-go/service/s3"
     "fmt"
+	"io"
 	"strings"
 )
 
@@ -21,17 +22,18 @@ type ConnParameter struct {
 
 // S3Item is a struct for infomation of S3 object / S3 prefix
 type S3Item struct {
-    Type: string
-    Name: string
-	Fullpath: string
-	Size: string
+    Type string
+    Name string
+	Fullpath string
+	Size string
 	LastModified string
 }
 
 // CreateSession is a function to create session to AWS
-func CreateSession(connJson string): (*session.Session, error) {
+func CreateSession(connJSON string) (*session.Session, error) {
+	var err error
 	param := ConnParameter{}
-	if err := json.Unmarshal(param, connJson); err != nil {
+	if err = json.Unmarshal([]byte(connJSON), &param); err != nil {
 		return nil, err
 	}
 
@@ -42,9 +44,9 @@ func CreateSession(connJson string): (*session.Session, error) {
 	var c *credentials.Credentials
 	switch param.Type {
 	case "inherit":
-		c, err = credentialWithInherit(param)
+		c, err = credentialWithInherit(&param)
 	case "accesskey":
-		c, err = credentialWithAccesskey(param)
+		c, err = credentialWithAccesskey(&param)
 	}
 	if err != nil {
 		return nil, err
@@ -56,68 +58,74 @@ func CreateSession(connJson string): (*session.Session, error) {
 	})
 }
 
-func credentialWithInherit(*ConnParameter param) (*credentials.Credentials, error) {
+func credentialWithInherit(param *ConnParameter) (*credentials.Credentials, error) {
 	profile := param.Profile
-	return session.NewSessionWithOptions(session.Options{Profile:profile})
+	return credentials.NewSharedCredentials("", profile), nil
 }
 
-func credentialWithAccesskey(*ConnParameter param) (*credentials.Credentials, error) {
-	aws_access_key_id = param.Accesskey
-	aws_secret_access_key = param.Secretkey
-	return credentials.NewStaticCredentials(aws_access_key_id, aws_secret_access_key, "")
+func credentialWithAccesskey(param *ConnParameter) (*credentials.Credentials, error) {
+	awsAccessKeyID := param.Accesskey
+	awsSecretAccessKey := param.Secretkey
+	return credentials.NewStaticCredentials(awsAccessKeyID, awsSecretAccessKey, ""), nil
 }
 
 
 // List is a function that get list of object / folder in S3
-func List(*session.Session sess, string bucket, string prefix) (S3Item[], err) {
+func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error) {
 	svc := s3.New(sess)
 
+	delimiter := "/"
+
 	resp, err := svc.ListObjects(&s3.ListObjectsInput{
-		Bucket: aws.String(bucketName),
+		Bucket: aws.String(bucket),
 		Prefix: aws.String(prefix),
-		Delimiter: "/",
+		Delimiter: &delimiter,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	items := make(S3Item[], *)
+	items := make([]S3Item, 0)
 	
 	for _, prefix := range resp.CommonPrefixes {
-		cutprefix = prefix.Prefix[0:len(prefix.Prefix)-1]
-		idxDelimiter = strings.LastIndex(prefix.Prefix, "/")
+		pstr := *(prefix.Prefix)
+		cutprefix := pstr[0:len(pstr)-1]
+		idxDelimiter := strings.LastIndex(pstr, "/")
 		if idxDelimiter < 0 {
 			idxDelimiter = 0
 		}
 		items = append(items, S3Item{
 			Type: "directory",
 			Name: cutprefix[idxDelimiter:],
-			Fullpath: prefix.Prefix,
+			Fullpath: *(prefix.Prefix),
 			Size: sprintSize(0),
 			LastModified: "",
 		})
 	}
 	for _, content := range resp.Contents {
-		idxDelimiter = strings.LastIndex(content.Key, "/")
+		key := *(content.Key)
+		idxDelimiter := strings.LastIndex(key, "/")
 		if idxDelimiter < 0 {
 			idxDelimiter = 0
 		}
 		items = append(items, S3Item{
 			Type: "file",
-			Name: content.Key[idxDelimiter:],
-			Fullpath: content.Key,
-			Size: sprintSize(content.Size),
-			LastModified: content.LastModified,
+			Name: key[idxDelimiter:],
+			Fullpath: key,
+			Size: sprintSize(*(content.Size)),
+			LastModified: content.LastModified.Format("2006-01-02 15:04:05"),
 		})
 	}
+
+	return items, nil
 }
 
-// List is a function that download a file in S3 and write body to parametered writer
-func DownloadStream(*session.Session sess, string bucket, string key, io.Writer w) err {
+// DownloadStream is a function that download a file in S3 and write body to parametered writer
+func DownloadStream(sess *session.Session, bucket string, key string, w io.Writer) error {
 	svc := s3.New(sess)
 
-	resp, err := svc.GetObject(&s3.ListObjectsInput{
-		Bucket: aws.String(bucketName),
+	resp, err := svc.GetObject(&s3.GetObjectInput{
+		Bucket: aws.String(bucket),
 		Key: aws.String(key),
 	})
 	if err != nil {
@@ -133,13 +141,13 @@ func DownloadStream(*session.Session sess, string bucket, string key, io.Writer 
 
 func sprintSize(n int64) string {
 	if n < 1024 {
-		return n + " Bytes"
+		return fmt.Sprintf("%d Bytes", n)
 	}
 	if n < 1024*1024 {
-		return n + " KB"
+		return fmt.Sprintf("%d KB", n)
 	}
 	if n < 1024*1024*1024 {
-		return n + " MB"
+		return fmt.Sprintf("%d MB", n)
 	}
-	return n + " GB"
+	return fmt.Sprintf("%d GB", n)
 }
