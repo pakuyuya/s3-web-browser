@@ -73,9 +73,9 @@ export default class S3Dir extends Vue {
   }
 
   public moveTo(path: string): void {
-    const profile = this.s3dir.s3profile || {id: ''};
+    const profile = this.s3dir.s3profile || {profileid: ''};
     path = path.replace(/^\/|\/$/gi, '');
-    this.$router.replace(`/s3/${profile.id || ''}/${path}`);
+    this.$router.replace(`/s3/${profile.profileid || ''}/${path}`);
   }
 
   public upDirectory(): void {

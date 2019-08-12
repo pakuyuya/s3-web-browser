@@ -55,7 +55,7 @@ export class S3dirStore extends VuexModule {
         }
 
         const params = {
-            profileid: this.s3profile.id,
+            profileid: this.s3profile.profileid,
             path: payload.path,
         };
         const url = common.resolveAPIUrl('s3dir?' + qs.stringify(params));
@@ -96,8 +96,8 @@ export class S3dirStore extends VuexModule {
         });
 
         const crumbs = [];
-        let hrefwork = `/s3/${this.s3profile.id}`;
-        crumbs.push(fnMakeBread(this.s3profile.name, hrefwork));
+        let hrefwork = `/s3/${this.s3profile.profileid}`;
+        crumbs.push(fnMakeBread(this.s3profile.profilename || '', hrefwork));
 
         for (let path of this.currentDir.split('/')) {
             path = path.trim();

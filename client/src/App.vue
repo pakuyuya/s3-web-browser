@@ -3,7 +3,7 @@
     <v-navigation-drawer app clipped fixed v-model="leftDrawer" :mini-variant="leftMiniVariant">
       <v-list dense>
         <v-list-item>
-          <v-btn tile outlined color="success">
+          <v-btn tile outlined color="success" @click="$ref.addProfileDialog.open()">
             <v-icon left>add</v-icon> Add S3 profile
           </v-btn>
         </v-list-item>
@@ -42,18 +42,23 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    <AddProfileDialog ref="addProfileDialog"></AddProfileDialog>
   </v-app>
 </template>
 
 <script lang="ts">
 // import Vue from 'vue';
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import S3list from './components/S3list.vue';
+import AddProfileDialog from './components/AddProfileDialog.vue';
 
 import {ProfileStore, S3Profile} from './store/modules/profile';
 import {S3dirStore} from './store/modules/s3dir';
 
-@Component
+@Component({
+  components: {
+    AddProfileDialog,
+  },
+})
 export default class App extends Vue {
   public profile = ProfileStore.CreateProxy( this.$store, ProfileStore );
   public s3dir = S3dirStore.CreateProxy( this.$store, S3dirStore );

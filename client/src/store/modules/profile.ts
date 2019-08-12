@@ -1,6 +1,6 @@
 import { VuexModule, mutation, action, getter, Module } from 'vuex-class-component';
 import axios from 'axios';
-import * as common from '../../common'
+import * as common from '../../common';
 export interface ProfileState {
     list: S3Profile[];
 }

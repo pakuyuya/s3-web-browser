@@ -3,7 +3,7 @@
         <v-form ref="form" v-model="valid" lazy-validation>
             <v-card>
                 <v-toolbar dark color="primary">
-                    <v-btn icon dark @click="dialog = false">
+                    <v-btn icon dark @click="close">
                         <v-icon>close</v-icon>
                     </v-btn>
                     <v-toolbar-title>>Add S3 Contents</v-toolbar-title>
@@ -44,7 +44,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" @click="submitForm"></v-btn>
+                    <v-btn color="primary" @click="submitForm">Save</v-btn>
                 </v-card-actions>
             </v-card>
         </v-form>
@@ -55,14 +55,15 @@
 // import Vue from 'vue';
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 
-import {S3dirStore} from '../store/modules/s3dir';
 import {ProfileStore} from '../store/modules/profile';
 
 
 @Component
-export default class S3Dir extends Vue {
-  public dialog: boolean = false;
+export default class AddProfileDialog extends Vue {
+  public profile = ProfileStore.CreateProxy( this.$store, ProfileStore );
 
+  public dialog: boolean = false;
+  public valid: boolean = true;
   public profilename: string = '';
   public bucket: string = '';
   public region: string = '';
@@ -72,52 +73,70 @@ export default class S3Dir extends Vue {
     accesskey: string,
     secretkey: string,
   } = {
-      type: '',
+      type: 'acccesskey',
       profile: '',
       accesskey: '',
       secretkey: '',
   };
 
   public rulesProfilename = [
-      v => !!v || 'Profilename is required',
-      v => (v && v.length <= 32) || 'Profilename is must be less than 32 characters',
+      (v: string) => !!v || 'Profilename is required',
+      (v: string) => (v && v.length <= 32) || 'Profilename is must be less than 32 characters',
   ];
 
   public rulesBucket = [
-      v => !!v || 'Bucket is required',
-      v => (v && v.length <= 128) || 'Region is must be less than 128 characters',
+      (v: string) => !!v || 'Bucket is required',
+      (v: string) => (v && v.length <= 128) || 'Region is must be less than 128 characters',
   ];
 
   public rulesRegion = [
-      v => !!v || 'Region is required',
-      v => (v && v.length <= 32) || 'Region is must be less than 32 characters',
+      (v: string) => !!v || 'Region is required',
+      (v: string) => (v && v.length <= 32) || 'Region is must be less than 32 characters',
   ];
 
   public rulesConnType = [
-      v => !!v || 'Type is required',
+      (v: string) => !!v || 'Type is required',
   ];
 
   public rulesConnAccesskey = [
-      v => !!v || 'Accesskey is required',
-      v => (v && v.length <= 128) || 'Accesskey is must be less than 128 characters',
+      (v: string) => !!v || 'Accesskey is required',
+      (v: string) => (v && v.length <= 128) || 'Accesskey is must be less than 128 characters',
   ];
 
   public rulesConnSecretkey = [
-      v => !!v || 'Secretkey is required',
-      v => (v && v.length <= 128) || 'Secretkey is must be less than 128 characters',
+      (v: string) => !!v || 'Secretkey is required',
+      (v: string) => (v && v.length <= 128) || 'Secretkey is must be less than 128 characters',
   ];
 
   public rulesConnProfile = [
-      v => !!v || 'Profile is required',
-      v => (v && v.length <= 128) || 'Profile is must be less than 128 characters',
+      (v: string) => !!v || 'Profile is required',
+      (v: string) => (v && v.length <= 128) || 'Profile is must be less than 128 characters',
   ];
 
-  public listProfileType: {value:string, caption:string}[] = [
-      {value: 'credentialfile', caption: 'Using Credential file'},
+  public listProfileType: Array<{value: string, caption: string}> = [
       {value: 'accesskey', caption: 'Using Access key'},
+      {value: 'credentialfile', caption: 'Using Credential file'},
     ];
 
-  public submitForm () {
+  public initopen() {
+    this.dialog = true;
+
+    this.profilename = '';
+    this.bucket = '';
+    this.region = '';
+    this.conn = {
+        type: 'acccesskey',
+        profile: '',
+        accesskey: '',
+        secretkey: '',
+    };
+  }
+
+  public close() {
+    this.dialog = false;
+  }
+
+  public submitForm() {
     if (!(this.$refs.form as any).validate()) {
       return;
     }
@@ -126,7 +145,27 @@ export default class S3Dir extends Vue {
   }
 
   public saveProfile() {
-    sa
+    const jsonmodel: any = { type: this.conn.type };
+    switch (this.conn.type) {
+    case 'accesskey':
+        jsonmodel.accesskey = this.conn.accesskey;
+        jsonmodel.secretkey = this.conn.secretkey;
+        break;
+    case 'credentialfile':
+        jsonmodel.profile = this.conn.profile;
+        break;
+    }
+
+    const model = {
+        profilename: this.profilename,
+        bucket: this.bucket,
+        region: this.region,
+        connjson: JSON.stringify(jsonmodel),
+    };
+    this.profile.insert(model)
+        .then(() => {
+            this.close();
+        });
   }
 
 }
