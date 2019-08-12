@@ -37,7 +37,7 @@ export class ProfileStore extends VuexModule {
     @action public async reload() {
         await axios.get(common.resolveAPIUrl('profiles'))
             .then((res) => {
-                this.list = res.data;
+                this.list.splice(0, this.list.length, ...(res.data as S3Profile[]));
             });
     }
 }

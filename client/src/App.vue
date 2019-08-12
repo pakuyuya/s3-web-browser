@@ -69,6 +69,10 @@ export default class App extends Vue {
 
   public rightDrawer: boolean = false;
 
+  public mounted() {
+    this.profile.reload();
+  }
+
   public selectProfile(profile: S3Profile) {
     this.s3dir.updateProfile({profile});
     this.$router.push(`/s3/${profile.profileid}/`);
