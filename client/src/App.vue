@@ -3,7 +3,7 @@
     <v-navigation-drawer app clipped fixed v-model="leftDrawer" :mini-variant="leftMiniVariant">
       <v-list dense>
         <v-list-item>
-          <v-btn tile outlined color="success" @click="$ref.addProfileDialog.open()">
+          <v-btn tile outlined color="success" @click="$refs.addProfileDialog.initopen()">
             <v-icon left>add</v-icon> Add S3 profile
           </v-btn>
         </v-list-item>

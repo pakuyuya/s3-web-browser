@@ -1,5 +1,3 @@
-import * as path from 'path';
-
 export function resolveAPIUrl(scriptpath: string): string {
     return process.env.VUE_APP_URL_APIROOT + '/' + scriptpath.replace(/^\//, '');
 }

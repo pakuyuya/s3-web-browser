@@ -6,23 +6,23 @@
                     <v-btn icon dark @click="close">
                         <v-icon>close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>>Add S3 Contents</v-toolbar-title>
+                    <v-toolbar-title>Add S3 Contents..</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
                     <v-container grid-list-md>
                         <v-layout wrap>
-                            <v-flex xs12 sm6 md4>
-                                <v-text-field label="Profile name" v-model="profilename" :rules="rulesProfilename"></v-text-field>
+                            <v-flex xs12 sm12 md12>
+                                <v-text-field label="プロファイル名" v-model="profilename" :rules="rulesProfilename"></v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm6 md4>
-                                <v-text-field label="Bucket" v-model="bucket" :rules="rulesBucket"></v-text-field>
+                            <v-flex xs12 sm12 md12>
+                                <v-text-field label="S3 Bucket" v-model="bucket" :rules="rulesBucket"></v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm6 md4>
-                                <v-text-field label="Region" v-model="region" :rules="rulesRegion"></v-text-field>
+                            <v-flex xs12 sm12 md12>
+                                <v-text-field label="S3 Region" v-model="region" :rules="rulesRegion"></v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm6 md4>
+                            <v-flex>
                                 <v-radio-group v-model="conn.type" :rules="rulesConnType">
-                                    <v-radio
+                                    <v-radio xs12 sm6 md4
                                         v-for="profileType in listProfileType"
                                         :key="profileType.value"
                                         :label="profileType.caption"
@@ -30,14 +30,14 @@
                                     ></v-radio>
                                 </v-radio-group>
                             </v-flex>
-                            <v-flex xs12 sm6 md4 v-if="conn.type === 'accesskey'">
-                                <v-text-field label="accesskey" v-model="conn.accesskey" :rules="rulesConnAccesskey"></v-text-field>
+                            <v-flex xs12 sm12 md12>
+                                <v-text-field label="accesskey" v-model="conn.accesskey" :rules="rulesConnAccesskey" :disabled="conn.type !== 'accesskey'"></v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm6 md4 v-if="conn.type === 'accesskey'">
-                                <v-text-field label="secretkey" v-model="conn.secretkey" :rules="rulesConnSecretkey"></v-text-field>
+                            <v-flex xs12 sm12 md12>
+                                <v-text-field label="secretkey" v-model="conn.secretkey" :rules="rulesConnSecretkey" :disabled="conn.type !== 'accesskey'"></v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm6 md4 v-if="conn.type === 'credentialfile'" :rules="rulesConnProfile">
-                                <v-text-field label="profile name in cledentials file" v-model="conn.profile"></v-text-field>
+                            <v-flex xs12 sm12 md12 :rules="rulesConnProfile">
+                                <v-text-field label="profile name in cledentials file" v-model="conn.profile" :disabled="conn.type !== 'credentialfile'"></v-text-field>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -80,32 +80,32 @@ export default class AddProfileDialog extends Vue {
   };
 
   public rulesProfilename = [
-      (v: string) => !!v || 'Profilename is required',
-      (v: string) => (v && v.length <= 32) || 'Profilename is must be less than 32 characters',
+      (v: string) => !!v || '必須です',
+      (v: string) => (v && v.length <= 32) || '32文字以下で入力してください',
   ];
 
   public rulesBucket = [
-      (v: string) => !!v || 'Bucket is required',
-      (v: string) => (v && v.length <= 128) || 'Region is must be less than 128 characters',
+      (v: string) => !!v || '必須です',
+      (v: string) => (v && v.length <= 128) || '128文字以下で入力してください',
   ];
 
   public rulesRegion = [
-      (v: string) => !!v || 'Region is required',
-      (v: string) => (v && v.length <= 32) || 'Region is must be less than 32 characters',
+      (v: string) => !!v || '必須です',
+      (v: string) => (v && v.length <= 32) || '32文字以下で入力してください',
   ];
 
   public rulesConnType = [
-      (v: string) => !!v || 'Type is required',
+      (v: string) => !!v || '必須です',
   ];
 
   public rulesConnAccesskey = [
-      (v: string) => !!v || 'Accesskey is required',
-      (v: string) => (v && v.length <= 128) || 'Accesskey is must be less than 128 characters',
+      (v: string) => !!v || '必須です',
+      (v: string) => (v && v.length <= 128) || '128文字以下で入力してください',
   ];
 
   public rulesConnSecretkey = [
-      (v: string) => !!v || 'Secretkey is required',
-      (v: string) => (v && v.length <= 128) || 'Secretkey is must be less than 128 characters',
+      (v: string) => !!v || '必須です',
+      (v: string) => (v && v.length <= 128) || '128文字以下で入力してください',
   ];
 
   public rulesConnProfile = [
@@ -114,8 +114,8 @@ export default class AddProfileDialog extends Vue {
   ];
 
   public listProfileType: Array<{value: string, caption: string}> = [
-      {value: 'accesskey', caption: 'Using Access key'},
-      {value: 'credentialfile', caption: 'Using Credential file'},
+      {value: 'accesskey', caption: 'アクセスキー認証'},
+      {value: 'credentialfile', caption: 'Credentials ファイル'},
     ];
 
   public initopen() {
