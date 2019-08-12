@@ -4,7 +4,7 @@ package db
 import (
     "database/sql"
     "fmt"
-
+	// Postgresql Driver
 	_ "github.com/lib/pq"
 	"s3-web-browser/server/go/setting"
 )

@@ -1,6 +1,5 @@
 import {S3Profile} from './profile';
 import axios from 'axios';
-import qs from 'qs';
 import * as common from '../../common';
 
 export interface S3DirState {
@@ -58,8 +57,7 @@ export class S3dirStore extends VuexModule {
             profileid: this.s3profile.profileid,
             path: payload.path,
         };
-        const url = common.resolveAPIUrl('s3dir?' + qs.stringify(params));
-
+        const url = common.resolveAPIUrl(`s3dir/${this.s3profile.profileid}/${payload.path}`);
         axios.get(url)
             .then((res) => {
                 this.files = res.data.map((item: any) => ({

@@ -11,7 +11,8 @@ import (
 	"s3-web-browser/server/go/setting"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,6 +32,8 @@ func main() {
 
 	router := gin.New()
 
+	store := cookie.NewStore([]byte("s3-web-browser"))
+	router.Use(sessions.Sessions("s3-web-browser", store))
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Use(cors.New(cors.Config{
@@ -47,8 +50,8 @@ func main() {
 	}
 	gpagelogin := router.Group("/")
 	{
-		gpagelogin.Use(loginFilterMiddleware())
-		gpagelogin.GET("/s3", page.IndexGET)
+		gpagelogin.Use(loginFilterPage())
+		gpagelogin.GET("/browser", page.BrowserGET)
 	}
 	// api
 	gapinologin := router.Group("/api")
@@ -58,7 +61,7 @@ func main() {
 	}
 	gapilogin := router.Group("/api")
 	{
-		gapilogin.Use(loginFilterMiddleware())
+		gapilogin.Use(loginFilterAPI())
 		gapilogin.GET("/profiles", api.ProfilesGET)
 		gapilogin.POST("/profile", api.ProfilePOST)
 		gapilogin.PUT("/profile/:id", api.ProfilePUT)
@@ -78,7 +81,21 @@ func main() {
 	server.ListenAndServe()
 }
 
-func loginFilterMiddleware() gin.HandlerFunc {
+func loginFilterAPI() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		loginInfo := session.Get(loginsession.SessionKey)
+
+		if loginInfo == nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func loginFilterPage() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		loginInfo := session.Get(loginsession.SessionKey)

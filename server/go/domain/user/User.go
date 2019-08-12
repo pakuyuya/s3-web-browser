@@ -40,7 +40,7 @@ func SelectAll(conn *sql.Tx) ([]User, error) {
 
 // SelectByID is a function that get all users from repositoy.
 func SelectByID(conn *sql.Tx, id int) (*User, error) {
-	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE id = $1;", id);
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE id = $1 FOR READ ONLY;", id);
 
 	user := User{}
 	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password)
@@ -54,7 +54,7 @@ func SelectByID(conn *sql.Tx, id int) (*User, error) {
 
 // SelectForAuth is a function that try get a record using login infomation.
 func SelectForAuth(conn *sql.Tx, loginid string, password string) (*User, error) {
-	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256);", loginid, password);
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256) FOR READ ONLY;", loginid, password);
 
 	user := User{}
 	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password)
