@@ -16,7 +16,7 @@ INSERT INTO s3web.users (username, loginid, password_sha256, create_at, update_a
 
 CREATE TABLE s3web.profiles(
     profileid VARCHAR(32),
-    profilename VARCHAR(128),
+    profilename VARCHAR(32),
     connjson VARCHAR(1024),
     bucket VARCHAR(128),
     basepath VARCHAR(512),

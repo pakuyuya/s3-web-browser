@@ -7,12 +7,12 @@
             <v-icon left>add</v-icon> Add S3 profile
           </v-btn>
         </v-list-item>
-        <v-list-item v-for="profile in $store.state.profile.list" :key="profile.id" @click="selectProfile(profile)">
+        <v-list-item v-for="profile in $store.state.profile.list" :key="profile.profileid" @click="selectProfile(profile)">
           <v-list-item-action>
             <v-icon>cloud_circle</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-action>{{ profile.name }}</v-list-item-action>
+            <v-list-item-action>{{ profile.profilename }}</v-list-item-action>
           </v-list-item-content>
           <v-list-item-action>
             <v-icon>close</v-icon>
@@ -66,7 +66,7 @@ export default class App extends Vue {
 
   public selectProfile(profile: S3Profile) {
     this.s3dir.updateProfile({profile});
-    this.$router.push(`/s3/${profile.id}/`);
+    this.$router.push(`/s3/${profile.profileid}/`);
   }
 }
 </script>
