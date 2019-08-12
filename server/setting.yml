@@ -7,3 +7,4 @@ DBUser: postgres
 DBPass: password
 DBName: s3webbrowser
 POSTGRES_DB: s3webbrowser
+AuthDisabled: true

@@ -50,7 +50,9 @@ func main() {
 	}
 	gpagelogin := router.Group("/")
 	{
-		gpagelogin.Use(loginFilterPage())
+		if (!setting.ServerSetting.AuthDisabled) {
+			gpagelogin.Use(loginFilterPage())
+		}
 		gpagelogin.GET("/browser", page.BrowserGET)
 	}
 	// api
@@ -61,7 +63,9 @@ func main() {
 	}
 	gapilogin := router.Group("/api")
 	{
-		gapilogin.Use(loginFilterAPI())
+		if (!setting.ServerSetting.AuthDisabled) {
+			gapilogin.Use(loginFilterAPI())
+		}
 		gapilogin.GET("/profiles", api.ProfilesGET)
 		gapilogin.POST("/profile", api.ProfilePOST)
 		gapilogin.PUT("/profile/:id", api.ProfilePUT)
