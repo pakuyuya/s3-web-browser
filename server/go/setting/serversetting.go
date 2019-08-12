@@ -2,7 +2,6 @@ package setting
 
 import (
 	"io/ioutil"
-	"fmt"
 
 	yaml "gopkg.in/yaml.v2"
 )
