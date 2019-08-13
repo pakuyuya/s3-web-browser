@@ -3,6 +3,7 @@ package profile
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
     // PostgreSQL driver
     _ "github.com/lib/pq"
@@ -13,12 +14,13 @@ type Profile struct {
 	Profileid string
 	Profilename string
 	Connjson string
+	Region string
 	Bucket string
 	Basepath string
 }
 
 func (m *Profile) String() string {
-	return fmt.Sprintf("Profileid:%s, Profilename:%s, Connjson:%s, Bucket:%s, Basepath:%s", m.Profileid, m.Profilename, m.Connjson, m.Bucket, m.Basepath)
+	return fmt.Sprintf("Profileid:%s, Profilename:%s, Connjson:%s, Region:%s, Bucket:%s, Basepath:%s", m.Profileid, m.Profilename, m.Region, m.Connjson, m.Bucket, m.Basepath)
 }
 
 // FormatBasepath is a function that normalize string as basepath
@@ -35,7 +37,7 @@ func FormatBasepath(basepath string) string {
 
 // SelectAll is a function that get all profiles from repositoy.
 func SelectAll(conn *sql.Tx) ([]Profile, error) {
-	rows, err := conn.Query("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles ORDER BY profileid FOR READ ONLY;");
+	rows, err := conn.Query("SELECT profileid, profilename, connjson, region, bucket, basepath FROM s3web.profiles ORDER BY profileid FOR READ ONLY;");
 
 	if err != nil {
 		return nil, err
@@ -45,7 +47,9 @@ func SelectAll(conn *sql.Tx) ([]Profile, error) {
 	profiles := make([]Profile, 0)
 	for rows.Next() {
 		profile := Profile{}
-		rows.Scan(&profile.Profileid, &profile.Profilename, &profile.Connjson, &profile.Bucket, &profile.Basepath)
+		var profileid int
+		rows.Scan(&profileid, &profile.Profilename, &profile.Connjson, &profile.Region, &profile.Bucket, &profile.Basepath)
+		profile.Profileid = strconv.Itoa(profileid)
 		profiles = append(profiles, profile)
 	}
 
@@ -54,10 +58,10 @@ func SelectAll(conn *sql.Tx) ([]Profile, error) {
 
 // SelectByID is a function that get all profiles from repositoy.
 func SelectByID(conn *sql.Tx, profileid string) (*Profile, error) {
-	row := conn.QueryRow("SELECT profileid, profilename, connjson, bucket, basepath FROM s3web.profiles WHERE profileid = $1;", profileid);
+	row := conn.QueryRow("SELECT profileid, profilename, connjson, region, bucket, basepath FROM s3web.profiles WHERE profileid = $1;", profileid);
 
 	profile := Profile{}
-	err := row.Scan(&profile.Profileid, &profile.Profilename, &profile.Connjson, &profile.Bucket, &profile.Basepath)
+	err := row.Scan(&profile.Profileid, &profile.Profilename, &profile.Connjson, &profile.Bucket, &profile.Bucket, &profile.Basepath)
 
 	if err != nil {
 		return nil, err
@@ -68,8 +72,8 @@ func SelectByID(conn *sql.Tx, profileid string) (*Profile, error) {
 
 // Insert is a function that insert a record to repositoy.
 func Insert(conn *sql.Tx, m *Profile) (int64, error) {
-	query := "INSERT INTO s3web.profiles(profileid, profilename, connjson, bucket, basepath, create_at, update_at) VALUES($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);"
-	args := []interface{}{m.Profileid, m.Profilename, m.Connjson, m.Bucket, m.Basepath}
+	query := "INSERT INTO s3web.profiles(profilename, connjson, bucket, region, basepath, create_at, update_at) VALUES($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);"
+	args := []interface{}{m.Profilename, m.Connjson, m.Region, m.Bucket, m.Basepath}
 
 	r, err := conn.Exec(query, args...);
 	if err != nil {
@@ -81,8 +85,9 @@ func Insert(conn *sql.Tx, m *Profile) (int64, error) {
 
 // UpdateByID is a function that insert a record to repositoy.
 func UpdateByID(conn *sql.Tx, m *Profile) (int64, error) {
-	query := "UPDATE s3web.profiles SET profilename=$2, connjson=$3, bucket=$4, basepath=$5, update_at=CURRENT_TIMESTAMP WHERE profileid=$1;"
-	args := []interface{}{m.Profileid, m.Profilename, m.Connjson, m.Bucket, m.Basepath}
+	query := "UPDATE s3web.profiles SET profilename=$2, connjson=$3, region=$4, bucket=$5, basepath=$6, update_at=CURRENT_TIMESTAMP WHERE profileid=$1;"
+	profileid, _ := strconv.Atoi(m.Profileid)
+	args := []interface{}{profileid, m.Profilename, m.Connjson, m.Region, m.Bucket, m.Basepath}
 
 	r, err := conn.Exec(query, args...);
 	if err != nil {
