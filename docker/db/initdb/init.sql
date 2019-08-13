@@ -24,7 +24,6 @@ CREATE TABLE s3web.profiles(
     profileid SERIAL NOT NULL,
     profilename VARCHAR(32),
     connjson VARCHAR(1024),
-    region VARCHAR(32),
     bucket VARCHAR(128),
     basepath VARCHAR(512),
     create_at TIMESTAMP,

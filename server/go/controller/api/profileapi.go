@@ -11,7 +11,6 @@ import (
 type Profile struct {
 	Profilename string `form:"profilename" binding:"required"`
 	Connjson string `form:"connjson" binding:"required"`
-	Region string `form:"region" binding:"required"`
 	Bucket string `form:"bucket" binding:"required"`
 	Basepath string `form:"profilename"`
 }
@@ -33,7 +32,6 @@ func ProfilePOST(c *gin.Context) {
 	p := profile.Profile {
 		Profilename: form.Profilename,
 		Connjson: form.Connjson,
-		Region: form.Region,
 		Bucket: form.Bucket,
 		Basepath: profile.FormatBasepath(form.Basepath),
 	}

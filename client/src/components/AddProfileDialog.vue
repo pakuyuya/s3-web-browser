@@ -18,7 +18,7 @@
                                 <v-text-field label="S3 Bucket" v-model="bucket" :rules="rulesBucket"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md12>
-                                <v-text-field label="S3 Region" v-model="region" :rules="rulesRegion"></v-text-field>
+                                <v-text-field label="S3 Region" v-model="conn.region" :rules="rulesRegion"></v-text-field>
                             </v-flex>
                             <v-flex>
                                 <v-radio-group v-model="conn.type" :rules="rulesConnType">
@@ -66,15 +66,16 @@ export default class AddProfileDialog extends Vue {
   public valid: boolean = true;
   public profilename: string = '';
   public bucket: string = '';
-  public region: string = '';
   public conn: {
     type: string,
     profile: string,
+    region: string,
     accesskey: string,
     secretkey: string,
   } = {
       type: 'acccesskey',
       profile: '',
+      region: '',
       accesskey: '',
       secretkey: '',
   };
@@ -123,10 +124,10 @@ export default class AddProfileDialog extends Vue {
 
     this.profilename = '';
     this.bucket = '';
-    this.region = '';
     this.conn = {
         type: 'acccesskey',
         profile: '',
+        region: '',
         accesskey: '',
         secretkey: '',
     };
@@ -145,7 +146,10 @@ export default class AddProfileDialog extends Vue {
   }
 
   public saveProfile() {
-    const jsonmodel: any = { type: this.conn.type };
+    const jsonmodel: any = {
+        type: this.conn.type,
+        region: this.conn.region,
+    };
     switch (this.conn.type) {
     case 'accesskey':
         jsonmodel.accesskey = this.conn.accesskey;
@@ -159,7 +163,6 @@ export default class AddProfileDialog extends Vue {
     const model = {
         profilename: this.profilename,
         bucket: this.bucket,
-        region: this.region,
         connjson: JSON.stringify(jsonmodel),
     };
     this.profile.insert(model)
