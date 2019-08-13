@@ -39,6 +39,10 @@
 
     <v-navigation-drawer app fixed right v-model="rightDrawer">
       <v-list>
+        <v-list-item @click.stop="rightDrawer = !rightDrawer">
+          <v-spacer></v-spacer>
+          <v-list-item-action><v-icon>chevron_right</v-icon></v-list-item-action>
+        </v-list-item>
         <v-list-item to="/logout">
           <v-list-item-action><v-icon>dashboard</v-icon></v-list-item-action>
           <v-list-item-content><v-list-item-title>ログアウト</v-list-item-title></v-list-item-content>
