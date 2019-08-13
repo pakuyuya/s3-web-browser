@@ -22,6 +22,9 @@
     </v-navigation-drawer>
 
     <v-app-bar dark app clipped-left clipped-right absolute color="#2277e0">
+      <v-btn icon @click.stop="leftDrawer = true">
+        <v-icon>menu</v-icon>
+      </v-btn>
       <v-toolbar-title>
         S3 Web Browser
       </v-toolbar-title>
