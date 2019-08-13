@@ -7,6 +7,7 @@ export interface ProfileState {
 export interface S3Profile {
     profileid?: string;
     profilename?: string;
+    region?: string;
     bucket?: string;
     connjson?: string;
 }
