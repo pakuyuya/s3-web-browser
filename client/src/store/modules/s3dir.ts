@@ -31,22 +31,7 @@ export class S3dirStore extends VuexModule {
     @getter public currentDir: string = '';
     @getter public breadcrumbs: any[] = [];
     @getter public error: string = '';
-    @getter public files: S3Item[] = [
-        {
-            type: S3ItemType.File,
-            name: 'file.txt',
-            fullpath: '/file',
-            size: '10 Bytes',
-            lastmodified: '2019/01/01 10:00:00',
-        },
-        {
-            type: S3ItemType.Directory,
-            name: 'directory',
-            fullpath: '/directory',
-            size: '10 Bytes',
-            lastmodified: '2019/01/01 10:00:00',
-        },
-    ];
+    @getter public files: S3Item[] = [];
 
 
     @action public async setCurrentDir(payload: any) {

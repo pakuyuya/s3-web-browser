@@ -70,6 +70,7 @@ func main() {
 		gapilogin.POST("/profile", api.ProfilePOST)
 		gapilogin.PUT("/profile/:id", api.ProfilePUT)
 		gapilogin.GET("/s3dir/:profileid/*path", api.S3dirGET)
+		gapilogin.GET("/s3download/:profileid/*path", api.S3downloadGET)
 	}
 
 	server := &http.Server{

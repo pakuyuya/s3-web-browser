@@ -14,7 +14,6 @@ export interface S3Profile {
 @Module({ namespacedPath: 'profile/' })
 export class ProfileStore extends VuexModule {
     @getter public list: S3Profile[] = [
-        {profileid: 'test', profilename: 'sample'},
     ];
 
     @action public async findById(profileid: string) {
