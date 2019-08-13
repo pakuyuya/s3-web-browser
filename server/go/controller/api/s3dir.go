@@ -26,16 +26,19 @@ func S3dirGET(c *gin.Context) {
 
 	profile, err := profile.SelectByID(tx, profileid)
 	if err != nil {
-		panic(err)
+		responseError(c, http.StatusNotFound, "接続プロファイルが見つかりませんでした。")
+		return
 	}
 
 	sess, err := s3provider.CreateSession(profile.Connjson)
 	if err != nil {
-		panic(err)
+		responseError(c, http.StatusUnauthorized, "AWSへの接続に失敗しました。接続情報を見直してください。")
+		return
 	}
 	s3items, err := s3provider.List(sess, profile.Bucket, path)
 	if err != nil {
-		panic(err)
+		responseError(c, http.StatusNotFound, "S3に接続権限がないか、指定したパスが見つかりませんでした。")
+		return
 	}
 
 	c.JSON(http.StatusOK, s3items)

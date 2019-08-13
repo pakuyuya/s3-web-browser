@@ -30,6 +30,7 @@ export class S3dirStore extends VuexModule {
     @getter public s3profile?: S3Profile = undefined;
     @getter public currentDir: string = '';
     @getter public breadcrumbs: any[] = [];
+    @getter public error: string = '';
     @getter public files: S3Item[] = [
         {
             type: S3ItemType.File,
@@ -57,6 +58,7 @@ export class S3dirStore extends VuexModule {
             profileid: this.s3profile.profileid,
             path: payload.path,
         };
+        this.setError('');
         const url = common.resolveAPIUrl(`s3dir/${this.s3profile.profileid}/${payload.path}`);
         axios.get(url)
             .then((res) => {
@@ -70,7 +72,10 @@ export class S3dirStore extends VuexModule {
                 this.updateCurrentDir({ path: payload.path });
                 this.updateBreadcrumbs();
             })
-            .catch();
+            .catch((error) => {
+                const msg = error.response.data.message || 'S3への接続に失敗しました。'
+                this.setError(msg);
+            });
     }
 
     @mutation public updateProfile({profile}: any) {
@@ -81,6 +86,7 @@ export class S3dirStore extends VuexModule {
         path = path.replace(/^\/+|\/+$/gi, '').trim();
         this.currentDir = path || '';
     }
+
     @mutation public updateBreadcrumbs() {
         if (this.s3profile === undefined)  {
             this.breadcrumbs = [];
@@ -110,6 +116,11 @@ export class S3dirStore extends VuexModule {
         crumbs[crumbs.length - 1].disabled = true;
         this.breadcrumbs = crumbs;
     }
+    
+    @mutation public setError(error: string) {
+        this.error = error;
+    }
+
 }
 
 export default S3dirStore.ExtractVuexModule(S3dirStore);

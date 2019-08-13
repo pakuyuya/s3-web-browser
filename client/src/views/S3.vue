@@ -12,6 +12,9 @@
         </template>
       </v-breadcrumbs>
     </v-card>
+    <v-alert class="ma-5" type="warning" v-if="s3dir.error">
+      {{s3dir.error}}
+    </v-alert>
     <v-card class="ma-5">
 
       <v-layout
