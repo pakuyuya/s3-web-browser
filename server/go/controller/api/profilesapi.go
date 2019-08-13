@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/profile"
@@ -32,6 +31,6 @@ func ProfilesGET(c *gin.Context) {
 		r := ProfileResoponse{ Profileid: profile.Profileid, Profilename: profile.Profilename }
 		responses = append(responses, r)
 	}
-
+	tx.Rollback()
 	c.JSON(http.StatusOK, responses)
 }
