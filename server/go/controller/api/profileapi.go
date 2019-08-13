@@ -41,6 +41,8 @@ func ProfilePOST(c *gin.Context) {
 		panic(err)
 	}
 
+	tx.Commit()
+
 	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
 
