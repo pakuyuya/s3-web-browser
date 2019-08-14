@@ -35,7 +35,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content><router-view/></v-content>
+    <v-content><router-view @show-error="onShowError"/></v-content>
 
     <v-navigation-drawer app fixed right v-model="rightDrawer">
       <v-list>
@@ -49,8 +49,9 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <AddProfileDialog ref="addProfileDialog"></AddProfileDialog>
-    <DeleteProfileDialog ref="deleteProfileDialog"></DeleteProfileDialog>
+    <AddProfileDialog @show-error="onShowError" ref="addProfileDialog"></AddProfileDialog>
+    <DeleteProfileDialog @show-error="onShowError" ref="deleteProfileDialog"></DeleteProfileDialog>
+    <ErrorDialog ref="errorDialog"></ErrorDialog>
   </v-app>
 </template>
 
@@ -59,6 +60,7 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import AddProfileDialog from './components/AddProfileDialog.vue';
 import DeleteProfileDialog from './components/DeleteProfileDialog.vue';
+import ErrorDialog from './components/ErrorDialog.vue';
 
 import {ProfileStore, S3Profile} from './store/modules/profile';
 import {S3dirStore} from './store/modules/s3dir';
@@ -67,6 +69,7 @@ import {S3dirStore} from './store/modules/s3dir';
   components: {
     AddProfileDialog,
     DeleteProfileDialog,
+    ErrorDialog,
   },
 })
 export default class App extends Vue {
@@ -86,6 +89,11 @@ export default class App extends Vue {
   public selectProfile(profile: S3Profile) {
     this.s3dir.updateProfile({profile});
     this.$router.push(`/s3/${profile.profileid}/`);
+  }
+
+  public onShowError(message: string) {
+    console.log(this.$refs.errorDialog);
+    (this.$refs.errorDialog as ErrorDialog).openWith(message);
   }
 }
 </script>

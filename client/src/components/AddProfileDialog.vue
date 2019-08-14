@@ -168,6 +168,11 @@ export default class AddProfileDialog extends Vue {
     this.profile.insert(model)
         .then(() => {
             this.close();
+        })
+        .catch((error) => {
+            console.log(error);
+            const msg = (error && error.response && error.response.data && error.response.data.message) || '';
+            this.$emit('show-error', msg);
         });
   }
 

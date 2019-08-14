@@ -47,22 +47,27 @@ export class S3dirStore extends VuexModule {
         const url = common.resolveAPIUrl(`s3dir/${this.s3profile.profileid}/${payload.path}`);
         axios.get(url)
             .then((res) => {
-                this.files = res.data.map((item: any) => ({
+                const files = res.data.map((item: any) => ({
                    type: item.type,
                    name: item.name,
                    fullpath: item.fullpath,
                    size: item.size,
                    lastmodified: item.lastmodified,
                 }));
+                this.setFiles(files);
                 this.updateCurrentDir({ path: payload.path });
                 this.updateBreadcrumbs();
             })
             .catch((error) => {
-                const msg = error.response.data.message || 'S3への接続に失敗しました。'
+                console.log(error);
+                const msg = error.response.data.message || 'S3への接続に失敗しました。';
                 this.setError(msg);
             });
     }
 
+    @mutation public setFiles(files: S3Item[]) {
+        this.files = files;
+    }
     @mutation public updateProfile({profile}: any) {
         this.s3profile = profile;
     }

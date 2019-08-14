@@ -27,7 +27,7 @@ import {ProfileStore, S3Profile} from '../store/modules/profile';
 
 
 @Component
-export default class AddProfileDialog extends Vue {
+export default class DeleteProfileDialog extends Vue {
   public profile = ProfileStore.CreateProxy( this.$store, ProfileStore );
   public selprofile?: S3Profile = {};
 
@@ -46,6 +46,11 @@ export default class AddProfileDialog extends Vue {
     this.profile.delete(this.selprofile)
         .then(() => {
             this.close();
+        })
+        .catch((error) => {
+            console.log(error);
+            const msg = (error && error.response && error.response.data && error.response.data.message) || '';
+            this.$emit('show-error', msg);
         });
   }
 
