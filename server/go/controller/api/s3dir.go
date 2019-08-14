@@ -8,6 +8,15 @@ import (
 	"s3-web-browser/server/go/domain/s3provider"
 )
 
+// S3ItemResponse is struct
+type S3ItemResponse struct {
+    Type string `json:"type"`
+    Name string `json:"name"`
+	Fullpath string `json:"fullpath"`
+	Size string `json:"suze"`
+	LastModified string `json:"lastModified"`
+}
+
 // S3dirGET is a implement as WebAPI
 func S3dirGET(c *gin.Context) {
 	
@@ -41,5 +50,10 @@ func S3dirGET(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, s3items)
+	responses := make([]S3ItemResponse, 0)
+	for _, s3item := range s3items {
+		responses = append(responses, S3ItemResponse(s3item))
+	}
+
+	c.JSON(http.StatusOK, responses)
 }

@@ -90,7 +90,7 @@ func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error)
 	for _, prefix := range resp.CommonPrefixes {
 		pstr := *(prefix.Prefix)
 		cutprefix := pstr[0:len(pstr)-1]
-		idxDelimiter := strings.LastIndex(pstr, "/")
+		idxDelimiter := strings.LastIndex(cutprefix, "/")
 		if idxDelimiter < 0 {
 			idxDelimiter = 0
 		}
