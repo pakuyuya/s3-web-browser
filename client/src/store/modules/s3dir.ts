@@ -64,6 +64,12 @@ export class S3dirStore extends VuexModule {
                 this.setError(msg);
             });
     }
+    
+    @action public async download(item: S3Item) {
+        const profileid = (this.s3profile && this.s3profile.profileid) || '';
+        const url = common.resolveAPIUrl(`s3download/${profileid}/${item.fullpath}`);
+        window.open(url);
+    }
 
     @mutation public setFiles(files: S3Item[]) {
         this.files = files;

@@ -87,30 +87,36 @@ func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error)
 
 	items := make([]S3Item, 0)
 	
-	for _, prefix := range resp.CommonPrefixes {
-		pstr := *(prefix.Prefix)
+	for _, p := range resp.CommonPrefixes {
+		if strings.TrimSuffix(*(p.Prefix), "/") == strings.TrimSuffix(prefix, "/") {
+			continue
+		}
+		pstr := *(p.Prefix)
 		cutprefix := pstr[0:len(pstr)-1]
 		idxDelimiter := strings.LastIndex(cutprefix, "/")
 		if idxDelimiter < 0 {
-			idxDelimiter = 0
+			idxDelimiter = -1
 		}
 		items = append(items, S3Item{
 			Type: "directory",
-			Name: cutprefix[idxDelimiter:],
-			Fullpath: *(prefix.Prefix),
+			Name: cutprefix[idxDelimiter + 1:],
+			Fullpath: *(p.Prefix),
 			Size: sprintSize(0),
 			LastModified: "",
 		})
 	}
 	for _, content := range resp.Contents {
+		if strings.TrimSuffix(*(content.Key), "/") == strings.TrimSuffix(prefix, "/") {
+			continue
+		}
 		key := *(content.Key)
 		idxDelimiter := strings.LastIndex(key, "/")
 		if idxDelimiter < 0 {
-			idxDelimiter = 0
+			idxDelimiter = -1
 		}
 		items = append(items, S3Item{
 			Type: "file",
-			Name: key[idxDelimiter:],
+			Name: key[idxDelimiter + 1:],
 			Fullpath: key,
 			Size: sprintSize(*(content.Size)),
 			LastModified: content.LastModified.Format("2006-01-02 15:04:05"),
@@ -123,6 +129,8 @@ func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error)
 // DownloadStream is a function that download a file in S3 and write body to parametered writer
 func DownloadStream(sess *session.Session, bucket string, key string, w io.Writer) error {
 	svc := s3.New(sess)
+
+	fmt.Println(key)
 
 	resp, err := svc.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(bucket),

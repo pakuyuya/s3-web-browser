@@ -31,7 +31,7 @@
             </v-list-item>
           </v-list>
           <v-list v-for="file in this.s3dir.files" :key="file.name">
-            <v-list-item v-if="file.type === 'file'" @click="downloadFile(file.fullpath)">
+            <v-list-item v-if="file.type === 'file'" @click="downloadFile(file)">
               <v-list-item-action><v-icon>cloud_download</v-icon></v-list-item-action>
               <v-list-item-title>{{ file.name }}</v-list-item-title>
             </v-list-item>
@@ -50,7 +50,7 @@
 // import Vue from 'vue';
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 
-import {S3dirStore} from '../store/modules/s3dir';
+import {S3dirStore, S3Item} from '../store/modules/s3dir';
 import {ProfileStore} from '../store/modules/profile';
 
 Component.registerHooks([
@@ -71,8 +71,8 @@ export default class S3Dir extends Vue {
     this.refleshPath();
   }
 
-  public downlaodFile(path: string): void {
-    // TODO:
+  public downloadFile(item: S3Item): void {
+    this.s3dir.download(item);
   }
 
   public moveTo(path: string): void {

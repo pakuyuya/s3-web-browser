@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/profile"
 	"s3-web-browser/server/go/domain/s3provider"
@@ -12,7 +11,7 @@ import (
 // S3downloadGET is a implement as WebAPI
 func S3downloadGET(c *gin.Context) {
 	profileid := c.Param("profileid")
-	path := profile.FormatBasepath(c.Param("path"))
+	path := c.Param("path")
 	if profileid == "" || path == "" {
 		responseError(c, http.StatusBadRequest, "")
 		return
