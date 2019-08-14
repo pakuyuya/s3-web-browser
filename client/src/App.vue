@@ -7,14 +7,14 @@
             <v-icon left>add</v-icon> Add S3 profile
           </v-btn>
         </v-list-item>
-        <v-list-item v-for="profile in $store.state.profile.list" :key="profile.profileid" @click="selectProfile(profile)">
+        <v-list-item v-for="profile in $store.state.profile.list" :key="profile.profileid" @click.stop="selectProfile(profile)">
           <v-list-item-action>
             <v-icon>cloud_circle</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-action>{{ profile.profilename }}</v-list-item-action>
           </v-list-item-content>
-          <v-list-item-action>
+          <v-list-item-action @click.stop="$refs.deleteProfileDialog.openWith(profile)">
             <v-icon>close</v-icon>
           </v-list-item-action>
         </v-list-item>
@@ -50,6 +50,7 @@
       </v-list>
     </v-navigation-drawer>
     <AddProfileDialog ref="addProfileDialog"></AddProfileDialog>
+    <DeleteProfileDialog ref="deleteProfileDialog"></DeleteProfileDialog>
   </v-app>
 </template>
 
@@ -57,6 +58,7 @@
 // import Vue from 'vue';
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import AddProfileDialog from './components/AddProfileDialog.vue';
+import DeleteProfileDialog from './components/DeleteProfileDialog.vue';
 
 import {ProfileStore, S3Profile} from './store/modules/profile';
 import {S3dirStore} from './store/modules/s3dir';
@@ -64,6 +66,7 @@ import {S3dirStore} from './store/modules/s3dir';
 @Component({
   components: {
     AddProfileDialog,
+    DeleteProfileDialog,
   },
 })
 export default class App extends Vue {

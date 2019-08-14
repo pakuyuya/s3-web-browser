@@ -85,5 +85,38 @@ func ProfilePUT(c *gin.Context) {
 		return
 	}
 
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"result": "OK"})
+}
+
+// ProfilePUT is a implement as WebAPI
+func ProfileDELETE(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		responseError(c, http.StatusBadRequest, "更新に失敗しました")
+		return
+	}
+
+	conn, tx, err := getConnTx()
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	cnt, err := profile.DeleteByID(tx, id)
+	if err != nil {
+		tx.Rollback()
+		panic(err)
+	}
+
+	if (cnt < 1) {
+		tx.Rollback()
+		responseError(c, http.StatusNotFound, "削除対象がありません")
+		return
+	}
+
+	tx.Commit()
+
 	c.JSON(http.StatusOK, gin.H{"result": "OK"})
 }
