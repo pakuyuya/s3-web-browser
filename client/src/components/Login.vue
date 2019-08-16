@@ -80,7 +80,7 @@ export default class Login extends Vue {
         loginid: this.loginid,
         password: this.password,
       }).then((redirectTo) => {
-        window.location.replace(redirectTo);
+        window.location.href = redirectTo;
       }).catch((error) => {
         if (error.response && error.response.status === 401) {
           this.warnMsg = 'IDまたはパスワードが違います。';

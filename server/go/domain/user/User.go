@@ -3,16 +3,16 @@ package user
 import (
 	"database/sql"
 	"fmt"
-
+	// Postgresql Driver
     _ "github.com/lib/pq"
 )
 
 // User is a modle of record.
 type User struct {
-	ID int
-	Username string
-	Loginid string
-	Password string
+	ID int `json:"id"`
+	Username string `json:"username"`
+	Loginid string `json:"loginid"`
+	Password string `json:"password"`
 }
 
 func (m *User) String() string {

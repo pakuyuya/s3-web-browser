@@ -11,6 +11,8 @@ import (
 
 // LoginPOST is a implement as WebAPI
 func LoginPOST(c *gin.Context) {
+	session := sessions.Default(c)
+
 	var form struct {
 		Loginid string `form:"loginid" binding:"required"`
 		Password string `form:"password" binding:"required"`
@@ -34,7 +36,6 @@ func LoginPOST(c *gin.Context) {
 		return
 	}
 
-	session := sessions.Default(c)
 	session.Set(loginsession.SessionKey, logininfo)
 	session.Save()
 

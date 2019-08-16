@@ -23,6 +23,14 @@ export class UserStore extends VuexModule {
             return undefined;
         });
     }
+    @action public async loadLoginInfo() {
+        const url = common.resolveAPIUrl('logininfo');
+        return axios
+            .get(url)
+            .then((response) => {
+            this.name = response.data.username;
+        });
+    }
 }
 
 export default UserStore.ExtractVuexModule(UserStore);

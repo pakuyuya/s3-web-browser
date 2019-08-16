@@ -64,6 +64,7 @@ import ErrorDialog from '../../components/ErrorDialog.vue';
 
 import {ProfileStore, S3Profile} from '../../store/modules/profile';
 import {S3dirStore} from '../../store/modules/s3dir';
+import {UserStore} from '../../store/modules/user';
 
 @Component({
   components: {
@@ -73,8 +74,9 @@ import {S3dirStore} from '../../store/modules/s3dir';
   },
 })
 export default class App extends Vue {
-  public profile = ProfileStore.CreateProxy( this.$store, ProfileStore );
-  public s3dir = S3dirStore.CreateProxy( this.$store, S3dirStore );
+  public profile = ProfileStore.CreateProxy(this.$store, ProfileStore);
+  public s3dir = S3dirStore.CreateProxy(this.$store, S3dirStore);
+  public user = UserStore.CreateProxy(this.$store, UserStore);
 
   public leftDrawer: boolean = true;
 
@@ -84,6 +86,7 @@ export default class App extends Vue {
 
   public mounted() {
     this.profile.reload();
+    this.user.loadLoginInfo();
   }
 
   public selectProfile(profile: S3Profile) {
@@ -97,7 +100,7 @@ export default class App extends Vue {
   }
 
   public logout() {
-    window.location.replace('/logout');
+    window.location.href = '/logout';
   }
 }
 </script>

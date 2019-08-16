@@ -69,6 +69,7 @@ func main() {
 		if (!setting.ServerSetting.AuthDisabled) {
 			gapilogin.Use(loginFilterAPI())
 		}
+		gapilogin.GET("/logininfo", api.LogininfoGET)
 		gapilogin.GET("/profiles", api.ProfilesGET)
 		gapilogin.POST("/profile", api.ProfilePOST)
 		gapilogin.PUT("/profile/:id", api.ProfilePUT)
