@@ -59,12 +59,12 @@ export class S3dirStore extends VuexModule {
                 this.updateBreadcrumbs();
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
                 const msg = error.response.data.message || 'S3への接続に失敗しました。';
                 this.setError(msg);
             });
     }
-    
+
     @action public async download(item: S3Item) {
         const profileid = (this.s3profile && this.s3profile.profileid) || '';
         const url = common.resolveAPIUrl(`s3download/${profileid}/${item.fullpath}`);
@@ -112,7 +112,7 @@ export class S3dirStore extends VuexModule {
         crumbs[crumbs.length - 1].disabled = true;
         this.breadcrumbs = crumbs;
     }
-    
+
     @mutation public setError(error: string) {
         this.error = error;
     }

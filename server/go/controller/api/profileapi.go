@@ -43,7 +43,7 @@ func ProfilePOST(c *gin.Context) {
 
 	tx.Commit()
 
-	c.JSON(http.StatusOK, gin.H{"result": "OK"})
+	c.JSON(http.StatusOK, gin.H{"result": "OK", "redirectTo": "//browser"})
 }
 
 // ProfilePUT is a implement as WebAPI

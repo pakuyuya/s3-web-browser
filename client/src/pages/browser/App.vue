@@ -58,12 +58,12 @@
 <script lang="ts">
 // import Vue from 'vue';
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import AddProfileDialog from './components/AddProfileDialog.vue';
-import DeleteProfileDialog from './components/DeleteProfileDialog.vue';
-import ErrorDialog from './components/ErrorDialog.vue';
+import AddProfileDialog from '../../components/AddProfileDialog.vue';
+import DeleteProfileDialog from '../../components/DeleteProfileDialog.vue';
+import ErrorDialog from '../../components/ErrorDialog.vue';
 
-import {ProfileStore, S3Profile} from './store/modules/profile';
-import {S3dirStore} from './store/modules/s3dir';
+import {ProfileStore, S3Profile} from '../../store/modules/profile';
+import {S3dirStore} from '../../store/modules/s3dir';
 
 @Component({
   components: {
@@ -92,7 +92,7 @@ export default class App extends Vue {
   }
 
   public onShowError(message: string) {
-    console.log(this.$refs.errorDialog);
+    console.error(this.$refs.errorDialog);
     (this.$refs.errorDialog as ErrorDialog).openWith(message);
   }
 }

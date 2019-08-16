@@ -30,6 +30,7 @@
                     prepend-icon="person"
                     type="text"
                     v-model="loginid"
+                    autocomplete="off"
                     @keydown="keydown"
                   ></v-text-field>
 
@@ -40,14 +41,18 @@
                     prepend-icon="lock"
                     type="password"
                     v-model="password"
+                    autocomplete="off"
                     @keydown="keydown"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions class="pb-5 mr-2">
                 <v-spacer></v-spacer>
                 <v-btn color="primary" type="submit" @click="login">Login</v-btn>
               </v-card-actions>
+              <v-card-text v-if="warnMsg">
+                <v-alert type="warning">{{warnMsg}}</v-alert>
+              </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
@@ -58,29 +63,36 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { UserStore } from '../store/modules/user';
 
 @Component
 export default class Login extends Vue {
   public loginid: string = '';
   public password: string = '';
+  public userStore: UserStore = UserStore.CreateProxy(this.$store, UserStore );
+
+  public warnMsg: string = '';
 
   public login(): void {
-    // TODO:
+    this.warnMsg = '';
+    (async () => {
+      this.userStore.login({
+        loginid: this.loginid,
+        password: this.password,
+      }).then((redirectTo) => {
+        window.location.replace(redirectTo);
+      }).catch((error) => {
+        if (error.response && error.response.status === 401) {
+          this.warnMsg = 'IDまたはパスワードが違います。';
+        }
+        console.error(error);
+      });
+    })();
   }
+
   public keydown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.login();
-    }
-  }
-
-  get redirectTo() {
-    return this.$store.state.redirectTo;
-  }
-
-  @Watch('redirectTo')
-  public onChangeLogined(redirectTo: string) {
-    if (redirectTo !== '') {
-      window.location.replace(redirectTo);
     }
   }
 }

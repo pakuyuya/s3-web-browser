@@ -48,7 +48,7 @@ export default class DeleteProfileDialog extends Vue {
             this.close();
         })
         .catch((error: any) => {
-            console.log(error);
+            console.error(error);
             const msg = (error && error.response && error.response.data && error.response.data.message) || '';
             this.$emit('show-error', msg);
         });

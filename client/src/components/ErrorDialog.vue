@@ -25,7 +25,7 @@ export default class ErrorDialog extends Vue {
 
   public openWith(message?: string) {
     this.dialog = true;
-    this.message = message || 'システムエラーが発生しました。再試行していただくか、復旧しない場合管理者にご連絡ください。'
+    this.message = message || 'システムエラーが発生しました。再試行していただくか、復旧しない場合管理者にご連絡ください。';
   }
 
   public close() {
