@@ -45,8 +45,11 @@ func main() {
 	gpagenologin := router.Group("/")
 	{
 		gpagenologin.GET("/", page.IndexGET)
+		gpagenologin.GET("/login", page.LoginGET)
 		gpagenologin.GET("/logout", page.LogoutGET)
-		gpagenologin.Static("/static", "./static")
+		gpagenologin.Static("/js", "./static/js")
+		gpagenologin.Static("/css", "./static/css")
+		gpagenologin.Static("/favicon.ico", "./static/favicon.ico")
 	}
 	gpagelogin := router.Group("/")
 	{
