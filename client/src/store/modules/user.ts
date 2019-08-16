@@ -28,8 +28,12 @@ export class UserStore extends VuexModule {
         return axios
             .get(url)
             .then((response) => {
-            this.name = response.data.username;
+            this.setUsername(response.data.username);
         });
+    }
+
+    @mutation public setUsername(username: string) {
+        this.name = username;
     }
 }
 

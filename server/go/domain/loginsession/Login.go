@@ -10,9 +10,9 @@ import (
 
 // Logininfo is a struct for manage login session.
 type Logininfo struct {
-	UserID    string
-	UserName  string
-	IsEnabled bool
+	UserID    string `json:"userid"`
+	UserName  string `json:"username"`
+	IsEnabled bool `json:"isEnabled"`
 }
 
 // Auth is a function that authentication user.

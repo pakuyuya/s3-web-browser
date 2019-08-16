@@ -93,7 +93,7 @@ func main() {
 
 func loginFilterAPI() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
+		session := sessions.Default(c)	
 		loginInfo := session.Get(loginsession.SessionKey)
 
 		if loginInfo == nil {

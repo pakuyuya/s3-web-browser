@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"fmt"
+	"encoding/gob"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -36,8 +37,12 @@ func LoginPOST(c *gin.Context) {
 		return
 	}
 
+	gob.Register(logininfo)
 	session.Set(loginsession.SessionKey, logininfo)
-	session.Save()
+	err = session.Save()
+	if err != nil {
+		panic(err)		
+	}
 
 	tx.Rollback()
 	c.JSON(http.StatusOK, gin.H{
