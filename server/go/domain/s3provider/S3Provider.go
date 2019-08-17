@@ -1,31 +1,32 @@
 package s3provider
 
 import (
-    "encoding/json"
-    "github.com/aws/aws-sdk-go/aws"
-    "github.com/aws/aws-sdk-go/aws/session"
-    "github.com/aws/aws-sdk-go/aws/credentials"
-    "github.com/aws/aws-sdk-go/service/s3"
-    "fmt"
+	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // ConnParameter is a parameter to connect S3
 type ConnParameter struct {
-	Type string `json:"type"`
-	Region string `json:"region"`
-	Profile  string `json:"profile"`
+	Type      string `json:"type"`
+	Region    string `json:"region"`
+	Profile   string `json:"profile"`
 	Accesskey string `json:"accesskey"`
 	Secretkey string `json:"secretkey"`
 }
 
 // S3Item is a struct for infomation of S3 object / S3 prefix
 type S3Item struct {
-    Type string
-    Name string
-	Fullpath string
-	Size string
+	Type         string
+	Name         string
+	Fullpath     string
+	Size         string
 	LastModified string
 }
 
@@ -53,7 +54,7 @@ func CreateSession(connJSON string) (*session.Session, error) {
 	}
 
 	return session.NewSession(&aws.Config{
-		Region: aws.String(param.Region),
+		Region:      aws.String(param.Region),
 		Credentials: c,
 	})
 }
@@ -69,7 +70,6 @@ func credentialWithAccesskey(param *ConnParameter) (*credentials.Credentials, er
 	return credentials.NewStaticCredentials(awsAccessKeyID, awsSecretAccessKey, ""), nil
 }
 
-
 // List is a function that get list of object / folder in S3
 func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error) {
 	svc := s3.New(sess)
@@ -77,8 +77,8 @@ func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error)
 	delimiter := "/"
 
 	resp, err := svc.ListObjects(&s3.ListObjectsInput{
-		Bucket: aws.String(bucket),
-		Prefix: aws.String(prefix),
+		Bucket:    aws.String(bucket),
+		Prefix:    aws.String(prefix),
 		Delimiter: &delimiter,
 	})
 	if err != nil {
@@ -86,22 +86,22 @@ func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error)
 	}
 
 	items := make([]S3Item, 0)
-	
+
 	for _, p := range resp.CommonPrefixes {
 		if strings.TrimSuffix(*(p.Prefix), "/") == strings.TrimSuffix(prefix, "/") {
 			continue
 		}
 		pstr := *(p.Prefix)
-		cutprefix := pstr[0:len(pstr)-1]
+		cutprefix := pstr[0 : len(pstr)-1]
 		idxDelimiter := strings.LastIndex(cutprefix, "/")
 		if idxDelimiter < 0 {
 			idxDelimiter = -1
 		}
 		items = append(items, S3Item{
-			Type: "directory",
-			Name: cutprefix[idxDelimiter + 1:],
-			Fullpath: *(p.Prefix),
-			Size: sprintSize(0),
+			Type:         "directory",
+			Name:         cutprefix[idxDelimiter+1:],
+			Fullpath:     *(p.Prefix),
+			Size:         sprintSize(0),
 			LastModified: "",
 		})
 	}
@@ -115,10 +115,10 @@ func List(sess *session.Session, bucket string, prefix string) ([]S3Item, error)
 			idxDelimiter = -1
 		}
 		items = append(items, S3Item{
-			Type: "file",
-			Name: key[idxDelimiter + 1:],
-			Fullpath: key,
-			Size: sprintSize(*(content.Size)),
+			Type:         "file",
+			Name:         key[idxDelimiter+1:],
+			Fullpath:     key,
+			Size:         sprintSize(*(content.Size)),
 			LastModified: content.LastModified.Format("2006-01-02 15:04:05"),
 		})
 	}
@@ -134,7 +134,7 @@ func DownloadStream(sess *session.Session, bucket string, key string, w io.Write
 
 	resp, err := svc.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(bucket),
-		Key: aws.String(key),
+		Key:    aws.String(key),
 	})
 	if err != nil {
 		return err

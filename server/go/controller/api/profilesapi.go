@@ -3,13 +3,14 @@ package api
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/profile"
+
+	"github.com/gin-gonic/gin"
 )
 
 // ProfileResoponse is struct for response
 type ProfileResoponse struct {
-	Profileid string `json:"profileid"`
+	Profileid   string `json:"profileid"`
 	Profilename string `json:"profilename"`
 }
 
@@ -28,7 +29,7 @@ func ProfilesGET(c *gin.Context) {
 
 	responses := make([]ProfileResoponse, 0)
 	for _, profile := range profiles {
-		r := ProfileResoponse{ Profileid: profile.Profileid, Profilename: profile.Profilename }
+		r := ProfileResoponse{Profileid: profile.Profileid, Profilename: profile.Profilename}
 		responses = append(responses, r)
 	}
 	tx.Rollback()

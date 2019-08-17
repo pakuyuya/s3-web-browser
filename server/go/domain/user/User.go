@@ -6,21 +6,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
 	// Postgresql Driver
-    _ "github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 // User is a modle of record.
 type User struct {
-	ID int `json:"id"`
-	Username string `json:"username"`
-	Loginid string `json:"loginid"`
-	Password string `json:"password"`
-	Permissions map[string]interface{} `json:"permissions`
+	ID          int                    `json:"id"`
+	Username    string                 `json:"username"`
+	Loginid     string                 `json:"loginid"`
+	Password    string                 `json:"password"`
+	Permissions map[string]interface{} `json:"permissions"`
 }
 
 func stringifyPermissions(permissions *map[string]interface{}) string {
-	b := new (bytes.Buffer)
+	b := new(bytes.Buffer)
 	for key, value := range *permissions {
 		fmt.Fprintf(b, "%s=%t,", key, value.(bool))
 	}
@@ -45,7 +46,7 @@ func (m *User) String() string {
 
 // SelectAll is a function that get all users from repositoy.
 func SelectAll(conn *sql.Tx) ([]User, error) {
-	rows, err := conn.Query("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users ORDER BY id FOR READ ONLY;");
+	rows, err := conn.Query("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users ORDER BY id FOR READ ONLY;")
 
 	if err != nil {
 		return nil, err
@@ -67,7 +68,7 @@ func SelectAll(conn *sql.Tx) ([]User, error) {
 
 // SelectByID is a function that get all users from repositoy.
 func SelectByID(conn *sql.Tx, id int) (*User, error) {
-	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users WHERE id = $1 FOR READ ONLY;", id);
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users WHERE id = $1 FOR READ ONLY;", id)
 
 	user := User{}
 	var permissionsjson string
@@ -82,7 +83,7 @@ func SelectByID(conn *sql.Tx, id int) (*User, error) {
 
 // SelectForAuth is a function that try get a record using login infomation.
 func SelectForAuth(conn *sql.Tx, loginid string, password string) (*User, error) {
-	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256) FOR READ ONLY;", loginid, password);
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256) FOR READ ONLY;", loginid, password)
 
 	user := User{}
 	var permissionsjson string
@@ -100,11 +101,11 @@ func SelectForAuth(conn *sql.Tx, loginid string, password string) (*User, error)
 // Insert is a function that insert a record to repositoy.
 func Insert(conn *sql.Tx, m *User) (int, error) {
 	query := "INSERT INTO s3web.users(username, loginid, password_sha256, permissionsjson, create_at, update_at) VALUES($1, $2, digest($3, 'sha256'), $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;"
-	
+
 	permissionsjson, _ := json.Marshal(m.Permissions)
 	args := []interface{}{&m.Username, &m.Loginid, &m.Password, &permissionsjson}
 
-	row := conn.QueryRow(query, args...);
+	row := conn.QueryRow(query, args...)
 
 	id := 0
 	err := row.Scan(&id)
@@ -119,7 +120,7 @@ func UpdateByID(conn *sql.Tx, m *User) (int64, error) {
 	permissionsjson, _ := json.Marshal(m.Permissions)
 	args := []interface{}{m.ID, m.Username, m.Loginid, &permissionsjson}
 
-	r, err := conn.Exec(query, args...);
+	r, err := conn.Exec(query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -132,7 +133,7 @@ func UpdatePasswordByID(conn *sql.Tx, m *User) (int64, error) {
 	query := "UPDATE s3web.users SET password_sha256=digest($2, 'sha256'), update_at=CURRENT_TIMESTAMP WHERE id=$1;"
 	args := []interface{}{m.ID, m.Password}
 
-	r, err := conn.Exec(query, args...);
+	r, err := conn.Exec(query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -144,7 +145,7 @@ func UpdatePasswordByID(conn *sql.Tx, m *User) (int64, error) {
 func DeleteByID(conn *sql.Tx, id int) (int64, error) {
 	query := "DELETE FROM s3web.users WHERE id=$1;"
 
-	r, err := conn.Exec(query, id);
+	r, err := conn.Exec(query, id)
 	if err != nil {
 		return 0, err
 	}

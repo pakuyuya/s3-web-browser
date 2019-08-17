@@ -1,13 +1,14 @@
 package api
 
 import (
-	"net/http"
-	"fmt"
 	"encoding/gob"
+	"fmt"
+	"net/http"
+
+	"s3-web-browser/server/go/domain/loginsession"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"s3-web-browser/server/go/domain/loginsession"
 )
 
 // LoginPOST is a implement as WebAPI
@@ -15,7 +16,7 @@ func LoginPOST(c *gin.Context) {
 	session := sessions.Default(c)
 
 	var form struct {
-		Loginid string `form:"loginid" binding:"required"`
+		Loginid  string `form:"loginid" binding:"required"`
 		Password string `form:"password" binding:"required"`
 	}
 	if err := c.Bind(&form); err != nil {
@@ -41,13 +42,13 @@ func LoginPOST(c *gin.Context) {
 	session.Set(loginsession.SessionKey, logininfo)
 	err = session.Save()
 	if err != nil {
-		panic(err)		
+		panic(err)
 	}
 
 	tx.Rollback()
 	c.JSON(http.StatusOK, gin.H{
 		"redirectTo": "browser",
-		"logininfo": logininfo,
-		"result": "OK",
+		"logininfo":  logininfo,
+		"result":     "OK",
 	})
 }

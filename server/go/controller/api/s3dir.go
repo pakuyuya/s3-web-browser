@@ -10,16 +10,16 @@ import (
 
 // S3ItemResponse is struct
 type S3ItemResponse struct {
-    Type string `json:"type"`
-    Name string `json:"name"`
-	Fullpath string `json:"fullpath"`
-	Size string `json:"suze"`
+	Type         string `json:"type"`
+	Name         string `json:"name"`
+	Fullpath     string `json:"fullpath"`
+	Size         string `json:"suze"`
 	LastModified string `json:"lastModified"`
 }
 
 // S3dirGET is a implement as WebAPI
 func S3dirGET(c *gin.Context) {
-	
+
 	profileid := c.Param("profileid")
 	if profileid == "" {
 		responseError(c, http.StatusBadRequest, "更新に失敗しました")

@@ -1,13 +1,15 @@
 package api
+
 import (
 	"database/sql"
-	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/db"
+
+	"github.com/gin-gonic/gin"
 )
 
 func responseError(c *gin.Context, errorcode int, msg string) {
 	c.JSON(errorcode, gin.H{
-		"result": "error",
+		"result":  "error",
 		"message": msg,
 	})
 }

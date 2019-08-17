@@ -2,11 +2,11 @@ package api
 
 import (
 	"net/http"
-	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/profile"
 	"s3-web-browser/server/go/domain/s3provider"
-)
 
+	"github.com/gin-gonic/gin"
+)
 
 // S3downloadGET is a implement as WebAPI
 func S3downloadGET(c *gin.Context) {
@@ -34,7 +34,7 @@ func S3downloadGET(c *gin.Context) {
 		tx.Rollback()
 		panic(err)
 	}
-	
+
 	c.Writer.Header().Set("Content-Type", "application/octet-stream")
 	bucket := profile.Bucket
 	err = s3provider.DownloadStream(sess, bucket, path, c.Writer)

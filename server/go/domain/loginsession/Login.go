@@ -2,17 +2,18 @@ package loginsession
 
 import (
 	"database/sql"
-	"s3-web-browser/server/go/domain/user"
 	"errors"
-    // PostgreSQL driver
+	"s3-web-browser/server/go/domain/user"
+
+	// PostgreSQL driver
 	_ "github.com/lib/pq"
 )
 
 // Logininfo is a struct for manage login session.
 type Logininfo struct {
-	UserID    string `json:"userid"`
-	UserName  string `json:"username"`
-	IsEnabled bool `json:"isEnabled"`
+	UserID      string                 `json:"userid"`
+	UserName    string                 `json:"username"`
+	IsEnabled   bool                   `json:"isEnabled"`
 	Permissions map[string]interface{} `json:"permissions"`
 }
 
@@ -24,9 +25,9 @@ func Auth(tx *sql.Tx, loginid string, password string) (*Logininfo, error) {
 	}
 
 	info := Logininfo{
-		UserID:    user.Loginid,
-		UserName:  user.Username,
-		IsEnabled: true,
+		UserID:      user.Loginid,
+		UserName:    user.Username,
+		IsEnabled:   true,
 		Permissions: user.Permissions,
 	}
 

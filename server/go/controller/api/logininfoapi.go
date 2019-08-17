@@ -3,9 +3,10 @@ package api
 import (
 	"net/http"
 
+	"s3-web-browser/server/go/domain/loginsession"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"s3-web-browser/server/go/domain/loginsession"
 )
 
 // LogininfoGET is a implement as WebAPI
