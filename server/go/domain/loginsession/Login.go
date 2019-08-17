@@ -13,6 +13,7 @@ type Logininfo struct {
 	UserID    string `json:"userid"`
 	UserName  string `json:"username"`
 	IsEnabled bool `json:"isEnabled"`
+	Permissions map[string]interface{} `json:"permissions"`
 }
 
 // Auth is a function that authentication user.
@@ -26,6 +27,7 @@ func Auth(tx *sql.Tx, loginid string, password string) (*Logininfo, error) {
 		UserID:    user.Loginid,
 		UserName:  user.Username,
 		IsEnabled: true,
+		Permissions: user.Permissions,
 	}
 
 	return &info, nil

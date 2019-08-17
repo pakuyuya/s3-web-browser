@@ -3,7 +3,7 @@
     <v-navigation-drawer app clipped fixed v-model="leftDrawer" :mini-variant="leftMiniVariant">
       <v-list dense>
         <v-list-item>
-          <v-btn tile outlined color="success" @click="$refs.addProfileDialog.initopen()">
+          <v-btn v-if="user.permissions.admin" tile outlined color="success" @click="$refs.addProfileDialog.initopen()">
             <v-icon left>add</v-icon> Add S3 profile
           </v-btn>
         </v-list-item>
@@ -14,7 +14,7 @@
           <v-list-item-content>
             <v-list-item-action>{{ profile.profilename }}</v-list-item-action>
           </v-list-item-content>
-          <v-list-item-action @click.stop="$refs.deleteProfileDialog.openWith(profile)">
+          <v-list-item-action v-if="user.permissions.admin" @click.stop="$refs.deleteProfileDialog.openWith(profile)">
             <v-icon>close</v-icon>
           </v-list-item-action>
         </v-list-item>

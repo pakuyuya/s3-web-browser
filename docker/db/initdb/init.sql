@@ -7,6 +7,7 @@ CREATE TABLE s3web.users(
     username VARCHAR(128),
     loginid VARCHAR(60),
     password_sha256 VARCHAR(128),
+    permissionsjson VARCHAR(512),
     create_at TIMESTAMP,
     update_at TIMESTAMP
 );
@@ -17,8 +18,8 @@ ALTER TABLE s3web.users
 
 CREATE INDEX s3web_users_idx_1 ON s3web.users (loginid);
 
-INSERT INTO s3web.users (username, loginid, password_sha256, create_at, update_at)
-  VALUES ('Admin', 'admin', digest('password', 'sha256'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO s3web.users (username, loginid, password_sha256, permissionsjson, create_at, update_at)
+  VALUES ('Admin', 'admin', digest('password', 'sha256'), '{"admin":true}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 CREATE TABLE s3web.profiles(
     profileid SERIAL NOT NULL,

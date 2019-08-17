@@ -7,7 +7,8 @@ import * as common from '../../common';
 @Module({ namespacedPath: 'user/' })
 export class UserStore extends VuexModule {
     @getter public name: string = 'Guest';
-
+    @getter public permissions: any = {};
+    
     @action public async login(payload: {loginid: string, password: string}) {
         const url = common.resolveAPIUrl('login');
         const params = {
@@ -27,13 +28,19 @@ export class UserStore extends VuexModule {
         const url = common.resolveAPIUrl('logininfo');
         return axios
             .get(url)
-            .then((response) => {
-            this.setUsername(response.data.username);
-        });
+            .then(((response) => {
+                this.setUsername(response.data.username);
+                this.setPermissions(response.data.permissions);
+            }
+        ));
     }
 
     @mutation public setUsername(username: string) {
         this.name = username;
+    }
+    @mutation public setPermissions(permissions: any) {
+        this.permissions = permissions;
+        console.log(permissions);
     }
 }
 

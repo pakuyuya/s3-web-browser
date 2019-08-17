@@ -1,8 +1,11 @@
 package user
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"strings"
 	// Postgresql Driver
     _ "github.com/lib/pq"
 )
@@ -13,15 +16,36 @@ type User struct {
 	Username string `json:"username"`
 	Loginid string `json:"loginid"`
 	Password string `json:"password"`
+	Permissions map[string]interface{} `json:"permissions`
+}
+
+func stringifyPermissions(permissions *map[string]interface{}) string {
+	b := new (bytes.Buffer)
+	for key, value := range *permissions {
+		fmt.Fprintf(b, "%s=%t,", key, value.(bool))
+	}
+	return b.String()
+}
+
+func decodePermissions(permissonsjson string) *map[string]interface{} {
+	r := strings.NewReader(permissonsjson)
+	d := json.NewDecoder(r)
+
+	var permissons map[string]interface{}
+	err := d.Decode(&permissons)
+	if err != nil {
+		return nil
+	}
+	return &permissons
 }
 
 func (m *User) String() string {
-	return fmt.Sprintf("{Id:%d, Username:%s, Loginid:%s, Password:%s}", m.ID, m.Username, m.Loginid, m.Password)
+	return fmt.Sprintf("{Id:%d, Username:%s, Loginid:%s, Password:%s, Permissions:%s}", m.ID, m.Username, m.Loginid, m.Password, stringifyPermissions(&m.Permissions))
 }
 
 // SelectAll is a function that get all users from repositoy.
 func SelectAll(conn *sql.Tx) ([]User, error) {
-	rows, err := conn.Query("SELECT id, username, loginid, '********' AS password FROM s3web.users ORDER BY id FOR READ ONLY;");
+	rows, err := conn.Query("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users ORDER BY id FOR READ ONLY;");
 
 	if err != nil {
 		return nil, err
@@ -31,7 +55,10 @@ func SelectAll(conn *sql.Tx) ([]User, error) {
 	users := make([]User, 0)
 	for rows.Next() {
 		user := User{}
-		rows.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password)
+		var permissionsjson string
+		rows.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password, &permissionsjson)
+		json.Unmarshal([]byte(permissionsjson), &user.Permissions)
+
 		users = append(users, user)
 	}
 
@@ -40,36 +67,42 @@ func SelectAll(conn *sql.Tx) ([]User, error) {
 
 // SelectByID is a function that get all users from repositoy.
 func SelectByID(conn *sql.Tx, id int) (*User, error) {
-	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE id = $1 FOR READ ONLY;", id);
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users WHERE id = $1 FOR READ ONLY;", id);
 
 	user := User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password)
-
+	var permissionsjson string
+	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password, &permissionsjson)
 	if err != nil {
 		return nil, err
 	}
+	json.Unmarshal([]byte(permissionsjson), &user.Permissions)
 
 	return &user, nil
 }
 
 // SelectForAuth is a function that try get a record using login infomation.
 func SelectForAuth(conn *sql.Tx, loginid string, password string) (*User, error) {
-	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256) FOR READ ONLY;", loginid, password);
+	row := conn.QueryRow("SELECT id, username, loginid, '********' AS password, permissionsjson FROM s3web.users WHERE loginid = $1 AND password_sha256 = digest($2, 'sha256')::varchar(256) FOR READ ONLY;", loginid, password);
 
 	user := User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password)
+	var permissionsjson string
+	err := row.Scan(&user.ID, &user.Username, &user.Loginid, &user.Password, &permissionsjson)
 
 	if err != nil {
 		return nil, err
 	}
+
+	user.Permissions = *decodePermissions(permissionsjson)
 
 	return &user, nil
 }
 
 // Insert is a function that insert a record to repositoy.
 func Insert(conn *sql.Tx, m *User) (int, error) {
-	query := "INSERT INTO s3web.users(username, loginid, password_sha256, create_at, update_at) VALUES($1, $2, digest($3, 'sha256'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;"
-	args := []interface{}{&m.Username, &m.Loginid, &m.Password}
+	query := "INSERT INTO s3web.users(username, loginid, password_sha256, permissionsjson, create_at, update_at) VALUES($1, $2, digest($3, 'sha256'), $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;"
+	
+	permissionsjson, _ := json.Marshal(m.Permissions)
+	args := []interface{}{&m.Username, &m.Loginid, &m.Password, &permissionsjson}
 
 	row := conn.QueryRow(query, args...);
 
@@ -81,8 +114,10 @@ func Insert(conn *sql.Tx, m *User) (int, error) {
 // UpdateByID is a function that update a record in repositoy.
 // This function do not update password.
 func UpdateByID(conn *sql.Tx, m *User) (int64, error) {
-	query := "UPDATE s3web.users SET username=$2, loginid=$3, update_at=CURRENT_TIMESTAMP WHERE id=$1;"
-	args := []interface{}{m.ID, m.Username, m.Loginid}
+	query := "UPDATE s3web.users SET username=$2, loginid=$3, permissionsjson=$4, update_at=CURRENT_TIMESTAMP WHERE id=$1;"
+
+	permissionsjson, _ := json.Marshal(m.Permissions)
+	args := []interface{}{m.ID, m.Username, m.Loginid, &permissionsjson}
 
 	r, err := conn.Exec(query, args...);
 	if err != nil {

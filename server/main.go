@@ -71,11 +71,18 @@ func main() {
 		}
 		gapilogin.GET("/logininfo", api.LogininfoGET)
 		gapilogin.GET("/profiles", api.ProfilesGET)
-		gapilogin.POST("/profile", api.ProfilePOST)
-		gapilogin.PUT("/profile/:id", api.ProfilePUT)
-		gapilogin.DELETE("/profile/:id", api.ProfileDELETE)
 		gapilogin.GET("/s3dir/:profileid/*path", api.S3dirGET)
 		gapilogin.GET("/s3download/:profileid/*path", api.S3downloadGET)
+	}
+	gapiadmin:= router.Group("/api")
+	{
+		if (!setting.ServerSetting.AuthDisabled) {
+			gapiadmin.Use(loginFilterAPI())
+			gapiadmin.Use(permissionFilterAPI("admin"))
+		}
+		gapiadmin.POST("/profile", api.ProfilePOST)
+		gapiadmin.PUT("/profile/:id", api.ProfilePUT)
+		gapiadmin.DELETE("/profile/:id", api.ProfileDELETE)
 	}
 
 	server := &http.Server{
@@ -102,6 +109,26 @@ func loginFilterAPI() gin.HandlerFunc {
 		}
 
 		c.Next()
+		return
+	}
+}
+func permissionFilterAPI(allowPermissions ...string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)	
+		loginInfo := session.Get(loginsession.SessionKey)
+
+		if loginInfo == nil {
+			c.Next()
+			return
+		}
+
+		for _, key := range allowPermissions {
+			if _, ok := loginInfo.(*loginsession.Logininfo).Permissions[key]; ok {
+				c.Next()
+				return
+			}
+		}
+		c.AbortWithStatus(http.StatusForbidden)
 	}
 }
 
