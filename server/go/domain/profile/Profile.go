@@ -20,7 +20,7 @@ type Profile struct {
 }
 
 func (m *Profile) String() string {
-	return fmt.Sprintf("Profileid:%s, Profilename:%s, Connjson:%s, Region:%s, Bucket:%s, Basepath:%s", m.Profileid, m.Profilename, m.Connjson, m.Region, m.Bucket, m.Basepath)
+	return fmt.Sprintf("Profileid:%s, Profilename:%s, Connjson:%s, Bucket:%s, Basepath:%s", m.Profileid, m.Profilename, m.Connjson, m.Bucket, m.Basepath)
 }
 
 // FormatBasepath is a function that normalize string as basepath
