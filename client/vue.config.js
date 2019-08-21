@@ -2,7 +2,6 @@ module.exports = {
     devServer: {
         proxy: 'http://localhost:4000',
     },
-    publicPath: process.env.NODE_ENV === 'production' ? '/browser/' : '/',
     pages: {
         'browser': {
             filename: 'browser.html',
@@ -13,7 +12,6 @@ module.exports = {
         },
         'login': {
             filename: 'login.html',
-            publicPath: process.env.NODE_ENV === 'production' ? '/login/' : '/',
             entry: './src/pages/login/main.ts',
             templates: 'public/index.html',
             title: 'S3 Viewer',
