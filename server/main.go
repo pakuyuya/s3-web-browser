@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 	api "s3-web-browser/server/go/controller/api"
 	page "s3-web-browser/server/go/controller/page"
+	"time"
 
 	loginsession "s3-web-browser/server/go/domain/loginsession"
 	"s3-web-browser/server/go/setting"
@@ -53,10 +53,11 @@ func main() {
 	}
 	gpagelogin := router.Group("/")
 	{
-		if (!setting.ServerSetting.AuthDisabled) {
+		if !setting.ServerSetting.AuthDisabled {
 			gpagelogin.Use(loginFilterPage())
 		}
 		gpagelogin.GET("/browser", page.BrowserGET)
+		gpagelogin.GET("/browser/*subpath", page.BrowserGET)
 	}
 	// api
 	gapinologin := router.Group("/api")
@@ -66,7 +67,7 @@ func main() {
 	}
 	gapilogin := router.Group("/api")
 	{
-		if (!setting.ServerSetting.AuthDisabled) {
+		if !setting.ServerSetting.AuthDisabled {
 			gapilogin.Use(loginFilterAPI())
 		}
 		gapilogin.GET("/logininfo", api.LogininfoGET)
@@ -74,9 +75,9 @@ func main() {
 		gapilogin.GET("/s3dir/:profileid/*path", api.S3dirGET)
 		gapilogin.GET("/s3download/:profileid/*path", api.S3downloadGET)
 	}
-	gapiadmin:= router.Group("/api")
+	gapiadmin := router.Group("/api")
 	{
-		if (!setting.ServerSetting.AuthDisabled) {
+		if !setting.ServerSetting.AuthDisabled {
 			gapiadmin.Use(loginFilterAPI())
 			gapiadmin.Use(permissionFilterAPI("admin"))
 		}
@@ -100,7 +101,7 @@ func main() {
 
 func loginFilterAPI() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)	
+		session := sessions.Default(c)
 		loginInfo := session.Get(loginsession.SessionKey)
 
 		if loginInfo == nil {
@@ -114,7 +115,7 @@ func loginFilterAPI() gin.HandlerFunc {
 }
 func permissionFilterAPI(allowPermissions ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)	
+		session := sessions.Default(c)
 		loginInfo := session.Get(loginsession.SessionKey)
 
 		if loginInfo == nil {
