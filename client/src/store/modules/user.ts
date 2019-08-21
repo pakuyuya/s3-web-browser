@@ -8,7 +8,7 @@ import * as common from '../../common';
 export class UserStore extends VuexModule {
     @getter public name: string = 'Guest';
     @getter public permissions: any = {};
-    
+
     @action public async login(payload: {loginid: string, password: string}) {
         const url = common.resolveAPIUrl('login');
         const params = {
