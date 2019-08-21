@@ -3,9 +3,10 @@ package api
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"s3-web-browser/server/go/domain/profile"
 	"s3-web-browser/server/go/domain/s3provider"
+
+	"github.com/gin-gonic/gin"
 )
 
 // S3ItemResponse is struct
@@ -46,7 +47,7 @@ func S3dirGET(c *gin.Context) {
 	}
 	s3items, err := s3provider.List(sess, profile.Bucket, path)
 	if err != nil {
-		responseError(c, http.StatusNotFound, "S3に接続権限がないか、指定したパスが見つかりませんでした。")
+		responseError(c, http.StatusNotFound, "設定されたS3への認証情報が正しくないか、指定したパスが見つかりませんでした。")
 		return
 	}
 
